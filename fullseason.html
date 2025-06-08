@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head><title>📅 Sim Full Season</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<h1>📅 Simulate Full Season</h1>
+<button onclick="simFullSeason()">▶️ Sim Season</button>
+<pre id="output"></pre>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+<script>
+function simFullSeason() {
+  const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+  const moraleScores = { "Icon": 5, "Leader": 4, "Neutral": 3, "Shocked": 2, "Unsettled": 1 };
+  let winCount = 0;
+  let lossCount = 0;
+  const results = [];
+
+  for (let g = 1; g <= 30; g++) {
+    const moraleSum = gameState.roster.reduce((sum, p) => sum + (moraleScores[p.morale] || 3), 0);
+    const chemistry = Math.round((moraleSum / (gameState.roster.length * 5)) * 100);
+    const strength = gameState.roster.reduce((sum, p) => sum + p.rating, 0) * (chemistry / 100);
+    const opponentStrength = 1500 + Math.floor(Math.random() * 500);
+    const win = strength > opponentStrength;
+    win ? winCount++ : lossCount++;
+    results.push(`Game ${g}: ${win ? 'WIN' : 'LOSS'} | Chemistry: ${chemistry}%`);
+  }
+
+  gameState.wins = winCount;
+  gameState.losses = lossCount;
+  localStorage.setItem("basketballGM", JSON.stringify(gameState));
+  document.getElementById("output").textContent = results.join('\n') + `\n\nFinal Record: ${winCount} - ${lossCount}`;
+}
+</script>
+</body>
+</html>
