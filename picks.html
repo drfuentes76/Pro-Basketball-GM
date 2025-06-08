@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>📊 Draft Pick Browser</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #ede7f6; font-family: sans-serif; }
+    h1 { color: #4527a0; text-align: center; }
+    select, table { width: 90%; margin: 10px auto; }
+    th, td { padding: 8px; border: 1px solid #ccc; text-align: center; }
+    table { background: white; border-collapse: collapse; }
+  </style>
+</head>
+<body>
+<h1>📊 Draft Pick Viewer</h1>
+<h3 style="text-align:center">Select Team</h3>
+<select id="teamSelect" onchange="renderPicks()"></select>
+
+<table>
+  <thead><tr><th>Pick</th><th>Round</th><th>Projected Value</th></tr></thead>
+  <tbody id="pickTable"></tbody>
+</table>
+
+<div class="navbar">
+  <a href="index.html">🏠 Home</a>
+  <a href="roster.html">📋 Roster</a>
+  <a href="depth.html">📊 Depth</a>
+  <a href="save.html">💾 Save</a>
+  <a href="fullseason.html">▶️ Sim</a>
+</div>
+
+<script>
+const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+const teamSelect = document.getElementById("teamSelect");
+const pickTable = document.getElementById("pickTable");
+
+function renderTeamOptions() {
+  teamSelect.innerHTML = "";
+  const opt1 = document.createElement("option");
+  opt1.value = "My Team";
+  opt1.textContent = "My Team";
+  teamSelect.appendChild(opt1);
+
+  for (const name of Object.keys(gameState.teams || {})) {
+    const opt = document.createElement("option");
+    opt.value = name;
+    opt.textContent = name;
+    teamSelect.appendChild(opt);
+  }
+}
+
+function renderPicks() {
+  const team = teamSelect.value;
+  const picks = team === "My Team" ? gameState.draftPicks : gameState.teams?.[team]?.draftPicks || [];
+  pickTable.innerHTML = "";
+  picks.forEach(p => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${p.name}</td><td>${p.round || "?"}</td><td>${p.value || "?"}</td>`;
+    pickTable.appendChild(row);
+  });
+}
+
+renderTeamOptions();
+renderPicks();
+</script>
+</body>
+</html>

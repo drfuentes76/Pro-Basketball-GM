@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🧠 Mock Draft Preview</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #fff8e1; font-family: sans-serif; }
+    h1 { color: #ff8f00; text-align: center; }
+    table { width: 95%; margin: 20px auto; border-collapse: collapse; background: white; }
+    th, td { padding: 8px; border: 1px solid #ccc; text-align: center; }
+    td.protected { background-color: #ffe0b2; font-style: italic; }
+  </style>
+</head>
+<body>
+<h1>🧠 2026 Mock Draft</h1>
+<table>
+  <thead>
+    <tr><th>Pick</th><th>Team</th><th>Player</th><th>Position</th><th>Rating</th></tr>
+  </thead>
+  <tbody id="mockBody"></tbody>
+</table>
+<div class="navbar">
+  <a href="index.html">🏠 Home</a>
+  <a href="picks.html">📊 Picks</a>
+  <a href="roster.html">📋 Roster</a>
+</div>
+<script>
+const teams = Object.keys((JSON.parse(localStorage.getItem("basketballGM"))?.teams || {}));
+const mockPlayers = [
+  { name: "Jaylen Hawk", pos: "SG", rating: 82 },
+  { name: "Tariq Monroe", pos: "PF", rating: 81 },
+  { name: "Oscar Mendes", pos: "PG", rating: 80 },
+  { name: "Kevin Dai", pos: "C", rating: 79 },
+  { name: "Roman Osei", pos: "SF", rating: 78 },
+  { name: "Armin Geller", pos: "SG", rating: 77 },
+  { name: "K.C. Walton", pos: "PF", rating: 76 },
+  { name: "Marco Valdez", pos: "PG", rating: 75 },
+  { name: "Corey Knox", pos: "SF", rating: 74 },
+  { name: "Terrance Duke", pos: "C", rating: 73 },
+  { name: "Lazaro Benton", pos: "SG", rating: 72 },
+  { name: "Elijah Shaw", pos: "SF", rating: 71 },
+  { name: "Chase Randle", pos: "PG", rating: 70 },
+  { name: "Zion Harlow", pos: "C", rating: 69 },
+  { name: "Trent Boykin", pos: "PF", rating: 68 }
+];
+
+const protectedTeams = ["Lakers", "Rockets", "Hornets"];  // Example protected picks
+
+const body = document.getElementById("mockBody");
+mockPlayers.forEach((p, i) => {
+  const team = teams[i % teams.length] || "Expansion";
+  const row = document.createElement("tr");
+  row.innerHTML = `<td>${i + 1}</td><td class="${protectedTeams.includes(team) ? 'protected' : ''}">${team}${protectedTeams.includes(team) ? ' (Top-5 Protected)' : ''}</td><td>${p.name}</td><td>${p.pos}</td><td>${p.rating}</td>`;
+  body.appendChild(row);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>📝 Scouting Reports</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #f3e5f5; font-family: sans-serif; }
+    h1 { text-align: center; color: #6a1b9a; }
+    .report { background: white; margin: 10px auto; width: 90%; padding: 15px; border-radius: 5px; border: 1px solid #ccc; }
+    .report h3 { margin: 0 0 5px 0; }
+    .traits { font-size: 14px; color: #555; margin-top: 5px; }
+  </style>
+</head>
+<body>
+<h1>📝 Draft Prospect Scouting Reports</h1>
+
+<div id="scoutingArea"></div>
+
+<div class="navbar">
+  <a href="index.html">🏠 Home</a>
+  <a href="mockdraft.html">🧠 Mock Draft</a>
+  <a href="lottery.html">🎲 Lottery</a>
+  <a href="picks.html">📊 Picks</a>
+</div>
+
+<script>
+const players = [
+  { name: "Jaylen Hawk", pos: "SG", rating: 82 },
+  { name: "Tariq Monroe", pos: "PF", rating: 81 },
+  { name: "Oscar Mendes", pos: "PG", rating: 80 },
+  { name: "Kevin Dai", pos: "C", rating: 79 },
+  { name: "Roman Osei", pos: "SF", rating: 78 },
+  { name: "Armin Geller", pos: "SG", rating: 77 },
+  { name: "K.C. Walton", pos: "PF", rating: 76 },
+  { name: "Marco Valdez", pos: "PG", rating: 75 },
+  { name: "Corey Knox", pos: "SF", rating: 74 },
+  { name: "Terrance Duke", pos: "C", rating: 73 },
+  { name: "Lazaro Benton", pos: "SG", rating: 72 },
+  { name: "Elijah Shaw", pos: "SF", rating: 71 },
+  { name: "Chase Randle", pos: "PG", rating: 70 },
+  { name: "Zion Harlow", pos: "C", rating: 69 },
+  { name: "Trent Boykin", pos: "PF", rating: 68 }
+];
+
+const traits = [
+  "Elite court vision", "High basketball IQ", "Explosive first step",
+  "Strong rebounder", "Excellent perimeter defense", "Crafty ball handler",
+  "Raw but athletic", "Reliable mid-range jumper", "Aggressive slasher",
+  "Natural scorer", "Good wingspan", "Quick feet", "Coachable", "Needs polish", "Efficient passer"
+];
+
+const area = document.getElementById("scoutingArea");
+
+players.forEach((p, i) => {
+  const div = document.createElement("div");
+  div.className = "report";
+  div.innerHTML = `
+    <h3>${p.name} (${p.pos}) - Rating: ${p.rating}</h3>
+    <p class="traits">${traits[i]}</p>
+  `;
+  area.appendChild(div);
+});
+</script>
+</body>
+</html>

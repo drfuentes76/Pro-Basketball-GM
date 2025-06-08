@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🎲 Draft Lottery Simulator</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #e3f2fd; font-family: sans-serif; }
+    h1 { color: #1565c0; text-align: center; }
+    table { width: 80%; margin: 20px auto; border-collapse: collapse; background: white; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
+    button { display: block; margin: 20px auto; padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+<h1>🎲 Simulate Draft Lottery</h1>
+<button onclick="runLottery()">Run Lottery</button>
+
+<table>
+  <thead>
+    <tr><th>Pick</th><th>Team</th></tr>
+  </thead>
+  <tbody id="lotteryResults"></tbody>
+</table>
+
+<div class="navbar">
+  <a href="index.html">🏠 Home</a>
+  <a href="mockdraft.html">🧠 Mock Draft</a>
+  <a href="picks.html">📊 Picks</a>
+</div>
+
+<script>
+const lotteryTeams = [
+  { name: "Rockets", odds: 14 },
+  { name: "Hornets", odds: 14 },
+  { name: "Spurs", odds: 13.3 },
+  { name: "Pistons", odds: 12.5 },
+  { name: "Wizards", odds: 10.5 },
+  { name: "Blazers", odds: 9 },
+  { name: "Jazz", odds: 7.5 },
+  { name: "Raptors", odds: 6 },
+  { name: "Hawks", odds: 4.5 },
+  { name: "Magic", odds: 3 },
+  { name: "Bulls", odds: 2.2 },
+  { name: "Kings", odds: 1.5 },
+  { name: "Warriors", odds: 1.0 },
+  { name: "Pacers", odds: 0.5 }
+];
+
+function runLottery() {
+  const pool = [];
+  lotteryTeams.forEach(team => {
+    for (let i = 0; i < team.odds * 10; i++) {
+      pool.push(team.name);
+    }
+  });
+
+  const topPicks = [];
+  while (topPicks.length < 4) {
+    const draw = pool[Math.floor(Math.random() * pool.length)];
+    if (!topPicks.includes(draw)) {
+      topPicks.push(draw);
+    }
+  }
+
+  const rest = lotteryTeams.map(t => t.name).filter(name => !topPicks.includes(name));
+  const order = [...topPicks, ...rest];
+
+  const tbody = document.getElementById("lotteryResults");
+  tbody.innerHTML = "";
+  order.forEach((team, i) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${i + 1}</td><td>${team}</td>`;
+    tbody.appendChild(row);
+  });
+}
+</script>
+</body>
+</html>

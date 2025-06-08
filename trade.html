@@ -1,124 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head><title>🧠 GM Trade Suite</title><link rel="stylesheet" href="style.css"></head>
+<head>
+  <title>🔁 Trade Players</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { background: #f3e5f5; }
+    h1 { color: #6a1b9a; }
+    select, button { width: 90%; margin: 10px auto; display: block; padding: 10px; }
+  </style>
+</head>
 <body>
-  <h1>🧠 Trade Dashboard</h1>
-  <p><strong>GM Reputation:</strong> <span id="rep">Loading...</span></p>
-  <label>Select players to trade:</label>
-  <select id="playerSelect" multiple size="5" style="width: 100%;"></select>
-  <button onclick="proposeTrade()">Propose Trade</button>
-  <div id="feedback" style="margin-top: 1rem;"></div>
-  <pre id="output"></pre>
-  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
-<script>
-  let gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
-  let tradeAttempts = gameState.tradeAttempts || 0;
-  const repEl = document.getElementById("rep");
-  const select = document.getElementById("playerSelect");
-
-  const aiRoster = [
-    { name: "AI Star 1", position: "SF", rating: 88, age: 27, morale: "Neutral", salary: 10 },
-    { name: "AI Guard", position: "PG", rating: 82, age: 25, morale: "Neutral", salary: 7 },
-    { name: "AI Big", position: "C", rating: 85, age: 28, morale: "Neutral", salary: 9 },
-    { name: "AI Wing", position: "SG", rating: 80, age: 26, morale: "Neutral", salary: 6 },
-    { name: "AI Rookie", position: "PF", rating: 76, age: 22, morale: "Neutral", salary: 4 }
-  ];
-
-  function updateReputation() {
-    const rep = gameState.reputation?.GM ?? 0;
-    repEl.textContent = rep >= 0 ? `👍 ${rep}` : `👎 ${rep}`;
-  }
-
-  function populateDropdown() {
-    if (!gameState.roster || gameState.roster.length === 0) {
-      document.getElementById("output").textContent = "⚠️ No roster found. Start a new game first.";
-      return;
-    }
-    select.innerHTML = '';
-    gameState.roster.forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p.name;
-      opt.textContent = `${p.name} (${p.position}, OVR ${p.rating})`;
-      select.appendChild(opt);
-    });
-  }
-
-  function evaluateTradeValue(player) {
-    let value = player.rating;
-    if (player.position === "PG" || player.position === "C") value += 3;
-    if (player.age > 30) value -= 2;
-    return value;
-  }
-
-  function showAcceptanceMeter(score) {
-    const bar = document.getElementById("feedback");
-    let color = score >= 90 ? "lime" : score >= 75 ? "orange" : "red";
-    bar.innerHTML = `🤖 AI Acceptance Score: <strong style="color:${color};">${score}</strong>/100`;
-  }
-
-  function proposeTrade() {
-    if (tradeAttempts >= 5) {
-      document.getElementById("output").textContent = "📛 Trade limit reached for this season.";
-      return;
-    }
-
-    const selected = Array.from(select.selectedOptions).map(opt => opt.value);
-    if (selected.length === 0) return;
-
-    const offered = gameState.roster.filter(p => selected.includes(p.name));
-    const offerValue = offered.reduce((sum, p) => sum + evaluateTradeValue(p), 0);
-
-    const bestFit = aiRoster.reduce((best, player) => {
-      const diff = Math.abs(evaluateTradeValue(player) - offerValue);
-      return diff < best.diff ? { player, diff } : best;
-    }, { player: null, diff: Infinity });
-
-    const aiValue = evaluateTradeValue(bestFit.player);
-    const score = Math.round((offerValue / aiValue) * 100);
-    showAcceptanceMeter(score);
-
-    if (score >= 90) {
-      offered.forEach(p => {
-        const index = gameState.roster.findIndex(x => x.name === p.name);
-        if (index >= 0) gameState.roster.splice(index, 1);
-      });
-
-      gameState.roster.push(bestFit.player);
-      gameState.news = gameState.news || [];
-      gameState.news.push(`✅ AI accepted trade: ${offered.map(p => p.name).join(", ")} ➡️ ${bestFit.player.name}`);
-
-      gameState.reputation = gameState.reputation || {};
-      gameState.reputation["GM"] = (gameState.reputation["GM"] || 0) + 1;
-
-      gameState.roster.forEach(p => {
-        if (!p.morale) p.morale = "Neutral";
-        if (selected.includes(p.name)) p.morale = "Shocked";
-        else p.morale = p.morale === "Shocked" ? "Unsettled" : p.morale;
-      });
-
-      tradeAttempts++;
-      gameState.tradeAttempts = tradeAttempts;
-      localStorage.setItem("basketballGM", JSON.stringify(gameState));
-      document.getElementById("output").textContent = `✅ Trade success! Acquired ${bestFit.player.name}`;
-    } else {
-      const counter = aiRoster[Math.floor(Math.random() * aiRoster.length)];
-      document.getElementById("output").textContent = `❌ Trade rejected. Counter: ${counter.name} (OVR ${counter.rating})`;
-
-      gameState.reputation = gameState.reputation || {};
-      gameState.reputation["GM"] = (gameState.reputation["GM"] || 0) - 1;
-      tradeAttempts++;
-      gameState.tradeAttempts = tradeAttempts;
-      localStorage.setItem("basketballGM", JSON.stringify(gameState));
-    }
-
-    populateDropdown();
-    updateReputation();
-  }
-
-  populateDropdown();
-  updateReputation();
-</script>
-
+<h1>🔁 Trade Player</h1>
+<select id="playerSelect"></select>
+<button onclick="confirmTrade()">Trade Selected</button>
+<pre id="msg"></pre>
 <div class="navbar">
   <a href="index.html">🏠 Home</a>
   <a href="roster.html">📋 Roster</a>
@@ -126,5 +21,40 @@
   <a href="save.html">💾 Save</a>
   <a href="fullseason.html">▶️ Sim</a>
 </div>
+<script>
+const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+const select = document.getElementById("playerSelect");
+const msg = document.getElementById("msg");
+
+function populateDropdown() {
+  select.innerHTML = "";
+  if (!gameState.roster || gameState.roster.length === 0) {
+    const opt = document.createElement("option");
+    opt.textContent = "No players available";
+    select.appendChild(opt);
+    return;
+  }
+  gameState.roster.forEach(p => {
+    const opt = document.createElement("option");
+    opt.value = p.name;
+    opt.textContent = `${p.name} (${p.position}, OVR ${p.rating})`;
+    select.appendChild(opt);
+  });
+}
+function confirmTrade() {
+  const selected = select.value;
+  if (!selected) return;
+  if (confirm(`Are you sure you want to trade ${selected}?`)) {
+    const idx = gameState.roster.findIndex(p => p.name === selected);
+    if (idx !== -1) {
+      const removed = gameState.roster.splice(idx, 1);
+      localStorage.setItem("basketballGM", JSON.stringify(gameState));
+      populateDropdown();
+      msg.textContent = `✅ Traded ${removed[0].name}`;
+    }
+  }
+}
+populateDropdown();
+</script>
 </body>
 </html>
