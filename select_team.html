@@ -11,18 +11,23 @@
   <button onclick="loadTeam()">Confirm</button>
   <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
   <script>
-    const allTeams = JSON.parse(localStorage.getItem('nbaRosters')) || {};
-    const teamNames = Object.keys(allTeams);
     const select = document.getElementById("teamSelect");
 
-    teamNames.forEach(team => {
-      const option = document.createElement("option");
-      option.value = team;
-      option.textContent = team;
-      select.appendChild(option);
-    });
+    fetch('nba_rosters.json')
+      .then(res => res.json())
+      .then(data => {
+        localStorage.setItem("nbaRosters", JSON.stringify(data));
+        const teamNames = Object.keys(data);
+        teamNames.forEach(team => {
+          const option = document.createElement("option");
+          option.value = team;
+          option.textContent = team;
+          select.appendChild(option);
+        });
+      });
 
     function loadTeam() {
+      const allTeams = JSON.parse(localStorage.getItem('nbaRosters')) || {};
       const team = select.value;
       const roster = allTeams[team];
       const gameState = {
@@ -36,10 +41,6 @@
       localStorage.setItem("basketballGM", JSON.stringify(gameState));
       window.location.href = "season.html";
     }
-
-    fetch('nba_rosters.json')
-      .then(res => res.json())
-      .then(data => localStorage.setItem("nbaRosters", JSON.stringify(data)));
   </script>
 </body>
 </html>
