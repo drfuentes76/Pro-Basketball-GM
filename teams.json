@@ -1,92 +1,164 @@
-[
-  {
-    "name": "Atlanta Hawks"
+{
+  "Lakers": {
+    "logo": "https://a.espncdn.com/i/teamlogos/nba/500/lal.png",
+    "color": "#552583",
+    "roster": [
+      {
+        "name": "LeBron James",
+        "rating": 96
+      },
+      {
+        "name": "Anthony Davis",
+        "rating": 94
+      },
+      {
+        "name": "D'Angelo Russell",
+        "rating": 82
+      },
+      {
+        "name": "Austin Reaves",
+        "rating": 80
+      },
+      {
+        "name": "Jarred Vanderbilt",
+        "rating": 77
+      },
+      {
+        "name": "Gabe Vincent",
+        "rating": 78
+      },
+      {
+        "name": "Rui Hachimura",
+        "rating": 79
+      },
+      {
+        "name": "Christian Wood",
+        "rating": 77
+      },
+      {
+        "name": "Max Christie",
+        "rating": 74
+      },
+      {
+        "name": "Taurean Prince",
+        "rating": 75
+      },
+      {
+        "name": "Jaxson Hayes",
+        "rating": 76
+      },
+      {
+        "name": "Cam Reddish",
+        "rating": 75
+      }
+    ]
   },
-  {
-    "name": "Boston Celtics"
+  "Celtics": {
+    "logo": "https://a.espncdn.com/i/teamlogos/nba/500/bos.png",
+    "color": "#007A33",
+    "roster": [
+      {
+        "name": "Jayson Tatum",
+        "rating": 95
+      },
+      {
+        "name": "Jaylen Brown",
+        "rating": 91
+      },
+      {
+        "name": "Jrue Holiday",
+        "rating": 88
+      },
+      {
+        "name": "Kristaps Porzingis",
+        "rating": 86
+      },
+      {
+        "name": "Derrick White",
+        "rating": 84
+      },
+      {
+        "name": "Al Horford",
+        "rating": 81
+      },
+      {
+        "name": "Payton Pritchard",
+        "rating": 78
+      },
+      {
+        "name": "Sam Hauser",
+        "rating": 77
+      },
+      {
+        "name": "Luke Kornet",
+        "rating": 76
+      },
+      {
+        "name": "Oshae Brissett",
+        "rating": 75
+      },
+      {
+        "name": "Neemias Queta",
+        "rating": 74
+      },
+      {
+        "name": "JD Davison",
+        "rating": 73
+      }
+    ]
   },
-  {
-    "name": "Brooklyn Nets"
-  },
-  {
-    "name": "Charlotte Hornets"
-  },
-  {
-    "name": "Chicago Bulls"
-  },
-  {
-    "name": "Cleveland Cavaliers"
-  },
-  {
-    "name": "Dallas Mavericks"
-  },
-  {
-    "name": "Denver Nuggets"
-  },
-  {
-    "name": "Detroit Pistons"
-  },
-  {
-    "name": "Golden State Warriors"
-  },
-  {
-    "name": "Houston Rockets"
-  },
-  {
-    "name": "Indiana Pacers"
-  },
-  {
-    "name": "LA Clippers"
-  },
-  {
-    "name": "Los Angeles Lakers"
-  },
-  {
-    "name": "Memphis Grizzlies"
-  },
-  {
-    "name": "Miami Heat"
-  },
-  {
-    "name": "Milwaukee Bucks"
-  },
-  {
-    "name": "Minnesota Timberwolves"
-  },
-  {
-    "name": "New Orleans Pelicans"
-  },
-  {
-    "name": "New York Knicks"
-  },
-  {
-    "name": "Oklahoma City Thunder"
-  },
-  {
-    "name": "Orlando Magic"
-  },
-  {
-    "name": "Philadelphia 76ers"
-  },
-  {
-    "name": "Phoenix Suns"
-  },
-  {
-    "name": "Portland Trail Blazers"
-  },
-  {
-    "name": "Sacramento Kings"
-  },
-  {
-    "name": "San Antonio Spurs"
-  },
-  {
-    "name": "Toronto Raptors"
-  },
-  {
-    "name": "Utah Jazz"
-  },
-  {
-    "name": "Washington Wizards"
+  "Warriors": {
+    "logo": "https://a.espncdn.com/i/teamlogos/nba/500/gs.png",
+    "color": "#1D428A",
+    "roster": [
+      {
+        "name": "Stephen Curry",
+        "rating": 96
+      },
+      {
+        "name": "Klay Thompson",
+        "rating": 83
+      },
+      {
+        "name": "Draymond Green",
+        "rating": 84
+      },
+      {
+        "name": "Andrew Wiggins",
+        "rating": 82
+      },
+      {
+        "name": "Chris Paul",
+        "rating": 80
+      },
+      {
+        "name": "Kevon Looney",
+        "rating": 79
+      },
+      {
+        "name": "Gary Payton II",
+        "rating": 77
+      },
+      {
+        "name": "Jonathan Kuminga",
+        "rating": 78
+      },
+      {
+        "name": "Moses Moody",
+        "rating": 76
+      },
+      {
+        "name": "Dario Saric",
+        "rating": 75
+      },
+      {
+        "name": "Cory Joseph",
+        "rating": 74
+      },
+      {
+        "name": "Trayce Jackson-Davis",
+        "rating": 73
+      }
+    ]
   }
-]
+}

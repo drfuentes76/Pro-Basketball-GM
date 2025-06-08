@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🏀 Team Viewer</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    select, button, input { font-size: 16px; margin: 5px; padding: 6px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+    input[type="text"] { width: 100px; }
+  </style>
+</head>
+<body>
+  <h1>🏀 View & Edit Team Roster</h1>
+  <label for="viewSelect">Select Team:</label>
+  <select id="viewSelect"></select>
+
+  <label for="positionFilter">Filter by Position:</label>
+  <input type="text" id="positionFilter" placeholder="e.g., PG" oninput="loadRoster()">
+
+  <table id="rosterTable">
+    <thead>
+      <tr><th>Player</th><th>Rating</th><th>Position</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <button onclick="saveChanges()">💾 Save Changes</button>
+  <button onclick="window.location.href='index.html'">🏠 Return to Menu</button>
+
+  <script>
+    const teamSelect = document.getElementById("viewSelect");
+    const rosterTable = document.getElementById("rosterTable").querySelector("tbody");
+    const positionFilter = document.getElementById("positionFilter");
+    let gameState = JSON.parse(localStorage.getItem("basketballGM") || "{}");
+
+    function populateTeamSelect() {
+      for (const teamName in gameState.teams) {
+        const option = document.createElement("option");
+        option.value = teamName;
+        option.textContent = teamName;
+        teamSelect.appendChild(option);
+      }
+      teamSelect.onchange = loadRoster;
+      loadRoster();
+    }
+
+    function loadRoster() {
+      const teamName = teamSelect.value;
+      const team = gameState.teams[teamName];
+      const filter = positionFilter.value.trim().toLowerCase();
+      const roster = [...team.roster];
+      if (filter) {
+        roster.sort((a, b) => (a.position || '').localeCompare(b.position || ''));
+      }
+      rosterTable.innerHTML = "";
+      roster.forEach((player, i) => {
+        if (!filter || (player.position || '').toLowerCase().includes(filter)) {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${player.name}</td>
+            <td>${player.rating}</td>
+            <td><input type="text" value="${player.position || ''}" data-index="${i}"></td>`;
+          rosterTable.appendChild(row);
+        }
+      });
+    }
+
+    function saveChanges() {
+      const teamName = teamSelect.value;
+      const team = gameState.teams[teamName];
+      document.querySelectorAll("input[type='text']").forEach(input => {
+        const index = input.dataset.index;
+        if (team.roster[index]) {
+          team.roster[index].position = input.value.trim();
+        }
+      });
+      localStorage.setItem("basketballGM", JSON.stringify(gameState));
+      alert("Positions saved!");
+      loadRoster();
+    }
+
+    populateTeamSelect();
+  </script>
+</body>
+</html>

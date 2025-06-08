@@ -1,95 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>🏀 Select Team with Logos</title>
+  <title>🏀 Select Team</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    body { background: #ede7f6; font-family: sans-serif; }
-    h1 { color: #4527a0; text-align: center; }
     table { width: 95%; margin: 20px auto; border-collapse: collapse; background: white; }
     th, td { padding: 10px; border: 1px solid #ccc; text-align: center; }
     select, button { display: block; margin: 10px auto; padding: 10px; font-size: 16px; }
-    img.logo { width: 24px; height: 24px; vertical-align: middle; margin-right: 8px; }
+    label { display: block; text-align: center; margin-top: 20px; font-weight: bold; }
+    input[type='checkbox'] { transform: scale(1.5); margin: 10px; }
   </style>
 </head>
 <body>
-<h1>🏀 Select Your Team</h1>
-
+<h1 style="text-align:center">🏀 Select Your Team</h1>
 <select id="teamSelect"></select>
-<button onclick="startGame()">Start Game</button>
 
-<h2 style="text-align:center">📊 Team Power Rankings</h2>
+<label>
+  <input type="checkbox" id="importLegends"> Include NBA Legends in Free Agent Pool
+</label>
+
+<button id="startBtn">Start Game</button>
+
+<h2 style="text-align:center">📊 Power Rankings</h2>
 <table>
   <thead>
-    <tr><th>Rank</th><th>Team</th><th>Power Rating</th></tr>
+    <tr><th>Rank</th><th>Team</th><th>Rating</th></tr>
   </thead>
   <tbody id="rankingTable"></tbody>
 </table>
-
-<script>
-let gameState = JSON.parse(localStorage.getItem("basketballGM") || {});
-
-// Seed teams if empty
-if (!gameState.teams) {
-  gameState.teams = {
-    "Lakers": {
-      color: "#552583", logo: "https://a.espncdn.com/i/teamlogos/nba/500/lal.png",
-      roster: [{ name: "LeBron James", rating: 96 }]
-    },
-    "Celtics": {
-      color: "#007A33", logo: "https://a.espncdn.com/i/teamlogos/nba/500/bos.png",
-      roster: [{ name: "Jayson Tatum", rating: 93 }]
-    },
-    "Warriors": {
-      color: "#1D428A", logo: "https://a.espncdn.com/i/teamlogos/nba/500/gs.png",
-      roster: [{ name: "Stephen Curry", rating: 95 }]
-    },
-    "Bucks": {
-      color: "#00471B", logo: "https://a.espncdn.com/i/teamlogos/nba/500/mil.png",
-      roster: [{ name: "Giannis Antetokounmpo", rating: 97 }]
-    },
-    "Rockets": {
-      color: "#CE1141", logo: "https://a.espncdn.com/i/teamlogos/nba/500/hou.png",
-      roster: [{ name: "Jalen Green", rating: 85 }]
-    }
-  };
-  localStorage.setItem("basketballGM", JSON.stringify(gameState));
-}
-
-const teamSelect = document.getElementById("teamSelect");
-const rankingTable = document.getElementById("rankingTable");
-
-function populateTeams() {
-  const teams = Object.keys(gameState.teams);
-  const ratings = teams.map(t => {
-    const r = gameState.teams[t];
-    const avg = r.roster.reduce((a, p) => a + (p.rating || 50), 0) / r.roster.length;
-    return { team: t, rating: Math.round(avg), color: r.color, logo: r.logo };
-  }).sort((a, b) => b.rating - a.rating);
-
-  teamSelect.innerHTML = "";
-  ratings.forEach(team => {
-    const opt = document.createElement("option");
-    opt.value = team.team;
-    opt.textContent = team.team;
-    opt.style.color = team.color;
-    opt.style.backgroundImage = `url('${team.logo}')`;
-    teamSelect.appendChild(opt);
-
-    const row = document.createElement("tr");
-    row.innerHTML = `<td>${ratings.indexOf(team) + 1}</td><td style="color:${team.color}"><img src="${team.logo}" class="logo">${team.team}</td><td>${team.rating}</td>`;
-    rankingTable.appendChild(row);
-  });
-}
-
-function startGame() {
-  const selectedTeam = teamSelect.value;
-  gameState.selectedTeam = selectedTeam;
-  localStorage.setItem("basketballGM", JSON.stringify(gameState));
-  window.location.href = "index.html";
-}
-
-populateTeams();
-</script>
+<script src="selectteam.js"></script>
+<button onclick="window.location.href='index.html'">🏠 Return to Menu</button>
 </body>
 </html>
