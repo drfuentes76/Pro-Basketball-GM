@@ -1,0 +1,32 @@
+[
+  {
+    "name": "James Harden",
+    "position": "SG",
+    "rating": 88,
+    "age": 34,
+    "contractYears": 2,
+    "salary": 38.5,
+    "morale": "Neutral",
+    "team": "Houston Rockets"
+  },
+  {
+    "name": "Alperen Sengun",
+    "position": "C",
+    "rating": 83,
+    "age": 22,
+    "contractYears": 3,
+    "salary": 12.5,
+    "morale": "Happy",
+    "team": "Houston Rockets"
+  },
+  {
+    "name": "Jalen Green",
+    "position": "SG",
+    "rating": 81,
+    "age": 23,
+    "contractYears": 2,
+    "salary": 9.0,
+    "morale": "Neutral",
+    "team": "Houston Rockets"
+  }
+]

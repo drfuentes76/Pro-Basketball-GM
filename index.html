@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Basketball GM Simulation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🏀 Basketball GM Simulation</h1>
+  <pre id="game-output">Loading game...</pre>
+  <input type="text" id="game-input" placeholder="Enter command..." autofocus />
+  <div class="buttons">
+    <button onclick="input.value='roster';handleInput()">Roster</button>
+    <button onclick="input.value='simulate';handleInput()">Simulate</button>
+    <button onclick="input.value='draft';handleInput()">Draft</button>
+    <button onclick="input.value='trade';handleInput()">Trade</button>
+    <button onclick="input.value='playoffs';handleInput()">Playoffs</button>
+    <button onclick="input.value='news';handleInput()">News</button>
+    <button onclick="input.value='hall';handleInput()">Hall</button>
+    <button onclick="input.value='save';handleInput()">Save</button>
+    <button onclick="input.value='load';handleInput()">Load</button>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
