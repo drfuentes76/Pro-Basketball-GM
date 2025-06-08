@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🏆 Playoffs</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🏆 Playoffs</h1>
+  
+  <button onclick="simulatePlayoffs()">Simulate Playoffs</button>
+  <pre id='output'></pre>
+
+  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+  <script>
+    const gameState = JSON.parse(localStorage.getItem('basketballGM')) || {
+      teamName: "Houston Rockets",
+      year: 2026,
+      roster: [
+        {name:"Jalen Green", position:"SG", rating:82},
+        {name:"Alperen Sengun", position:"C", rating:84},
+        {name:"Fred VanVleet", position:"PG", rating:80}
+      ],
+      news: [],
+      hallOfFame: []
+    };
+    
+
+if (!gameState.history) gameState.history = {};
+gameState.roster.forEach(p => {
+  if (!gameState.history[p.name]) gameState.history[p.name] = [];
+  gameState.history[p.name].push({year: gameState.year, rating: p.rating});
+});
+
+
+gameState.roster = gameState.roster.filter(p => {
+  if (p.age >= 35 && Math.random() < 0.5) {
+    gameState.news.push(`${p.name} has retired.`);
+    return false;
+  }
+  return true;
+});
+if (!gameState.history) gameState.history = {};
+const rookies = [
+  { name: "Rookie 1", position: "PG", rating: 76, age: 21, salary: 3.5, morale: "Happy" },
+  { name: "Rookie 2", position: "SF", rating: 74, age: 22, salary: 2.8, morale: "Neutral" }
+];
+gameState.roster.push(...rookies);
+rookies.forEach(r => {
+  gameState.news.push(`${r.name} has joined the team.`);
+  gameState.history[r.name] = [{year: gameState.year, rating: r.rating}];
+});
+
+function simulatePlayoffs() {
+  applyRivalryPerformance();
+  let text = "Simulating Playoffs...\nHouston Rockets reached the Finals and lost to Boston Celtics 4-2.";
+  gameState.news.push("🏆 Finals appearance vs Celtics.");
+  localStorage.setItem('basketballGM', JSON.stringify(gameState));
+  document.getElementById('output').textContent = text;
+}
+
+  
+function developPlayers() {
+  gameState.roster.forEach(player => {
+    let delta = Math.random() < 0.5 ? 1 : -1;
+    if (player.age < 28) delta = 1;
+    if (player.age > 32) delta = -1;
+    player.rating += delta;
+    if (player.rating > 99) player.rating = 99;
+    if (player.rating < 50) player.rating = 50;
+    if (Math.random() < 0.2) {
+      player.morale = player.morale === "Happy" ? "Unhappy" : "Happy";
+    }
+  });
+  gameState.news.push("📈 Players have developed/regressed based on age and performance.");
+  localStorage.setItem('basketballGM', JSON.stringify(gameState));
+}
+
+
+if (!gameState.history) gameState.history = {};
+gameState.roster.forEach(p => {
+  if (!gameState.history[p.name]) gameState.history[p.name] = [];
+  gameState.history[p.name].push({year: gameState.year, rating: p.rating});
+});
+
+
+gameState.roster = gameState.roster.filter(p => {
+  if (p.age >= 35 && Math.random() < 0.5) {
+    gameState.news.push(`${p.name} has retired.`);
+    return false;
+  }
+  return true;
+});
+if (!gameState.history) gameState.history = {};
+const rookies = [
+  { name: "Rookie 1", position: "PG", rating: 76, age: 21, salary: 3.5, morale: "Happy" },
+  { name: "Rookie 2", position: "SF", rating: 74, age: 22, salary: 2.8, morale: "Neutral" }
+];
+gameState.roster.push(...rookies);
+rookies.forEach(r => {
+  gameState.news.push(`${r.name} has joined the team.`);
+  gameState.history[r.name] = [{year: gameState.year, rating: r.rating}];
+});
+
+function simulatePlayoffs() {
+  applyRivalryPerformance(); developPlayers(); document.getElementById('output').textContent = 'Playoffs simulated and player ratings updated.'; }
+
+function applyRivalryPerformance() {
+  if (!gameState.reputation) gameState.reputation = {};
+  gameState.roster.forEach(player => {
+    if (player.morale === "Fired Up") {
+      player.rating = Math.min(99, player.rating + 2);
+      gameState.news.push(`${player.name} played inspired due to rivalry hype.`);
+      gameState.reputation[player.name] = (gameState.reputation[player.name] || 0) + 1;
+    } else if (player.morale === "Annoyed") {
+      player.rating = Math.max(50, player.rating - 1);
+      gameState.news.push(`${player.name} underperformed due to media distractions.`);
+      gameState.reputation[player.name] = (gameState.reputation[player.name] || 0) - 1;
+    }
+  });
+}
+
+</script>
+<script>
+let startX = 0;
+document.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+});
+document.addEventListener('touchend', e => {
+  let endX = e.changedTouches[0].clientX;
+  if (endX < startX - 50) goNext();
+  else if (endX > startX + 50) goBack();
+});
+function goNext() {
+  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
+  const current = window.location.pathname.split("/").pop();
+  const idx = order.indexOf(current);
+  if (idx >= 0 && idx < order.length - 1) window.location.href = order[idx + 1];
+}
+function goBack() {
+  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
+  const current = window.location.pathname.split("/").pop();
+  const idx = order.indexOf(current);
+  if (idx > 0) window.location.href = order[idx - 1];
+}
+
+function developPlayers() {
+  gameState.roster.forEach(player => {
+    let delta = Math.random() < 0.5 ? 1 : -1;
+    if (player.age < 28) delta = 1;
+    if (player.age > 32) delta = -1;
+    player.rating += delta;
+    if (player.rating > 99) player.rating = 99;
+    if (player.rating < 50) player.rating = 50;
+    if (Math.random() < 0.2) {
+      player.morale = player.morale === "Happy" ? "Unhappy" : "Happy";
+    }
+  });
+  gameState.news.push("📈 Players have developed/regressed based on age and performance.");
+  localStorage.setItem('basketballGM', JSON.stringify(gameState));
+}
+
+
+if (!gameState.history) gameState.history = {};
+gameState.roster.forEach(p => {
+  if (!gameState.history[p.name]) gameState.history[p.name] = [];
+  gameState.history[p.name].push({year: gameState.year, rating: p.rating});
+});
+
+
+gameState.roster = gameState.roster.filter(p => {
+  if (p.age >= 35 && Math.random() < 0.5) {
+    gameState.news.push(`${p.name} has retired.`);
+    return false;
+  }
+  return true;
+});
+if (!gameState.history) gameState.history = {};
+const rookies = [
+  { name: "Rookie 1", position: "PG", rating: 76, age: 21, salary: 3.5, morale: "Happy" },
+  { name: "Rookie 2", position: "SF", rating: 74, age: 22, salary: 2.8, morale: "Neutral" }
+];
+gameState.roster.push(...rookies);
+rookies.forEach(r => {
+  gameState.news.push(`${r.name} has joined the team.`);
+  gameState.history[r.name] = [{year: gameState.year, rating: r.rating}];
+});
+
+function simulatePlayoffs() {
+  applyRivalryPerformance(); developPlayers(); document.getElementById('output').textContent = 'Playoffs simulated and player ratings updated.'; }
+
+function applyRivalryPerformance() {
+  if (!gameState.reputation) gameState.reputation = {};
+  gameState.roster.forEach(player => {
+    if (player.morale === "Fired Up") {
+      player.rating = Math.min(99, player.rating + 2);
+      gameState.news.push(`${player.name} played inspired due to rivalry hype.`);
+      gameState.reputation[player.name] = (gameState.reputation[player.name] || 0) + 1;
+    } else if (player.morale === "Annoyed") {
+      player.rating = Math.max(50, player.rating - 1);
+      gameState.news.push(`${player.name} underperformed due to media distractions.`);
+      gameState.reputation[player.name] = (gameState.reputation[player.name] || 0) - 1;
+    }
+  });
+}
+
+</script>
+</body>
+</html>

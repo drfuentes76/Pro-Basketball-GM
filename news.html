@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>📰 League News</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>📰 League News</h1>
+  
+  <button onclick="showNews()">Read News</button>
+  <button onclick="triggerRivalry()">Start Social Media Battle</button><pre id='output'></pre>
+
+  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+  <script>
+    const gameState = JSON.parse(localStorage.getItem('basketballGM')) || {
+      teamName: "Houston Rockets",
+      year: 2026,
+      roster: [
+        {name:"Jalen Green", position:"SG", rating:82},
+        {name:"Alperen Sengun", position:"C", rating:84},
+        {name:"Fred VanVleet", position:"PG", rating:80}
+      ],
+      news: [],
+      hallOfFame: []
+    };
+    
+function showNews() {
+  let text = gameState.news.length ? gameState.news.join('\n') : "No news yet.";
+  document.getElementById('output').textContent = text;
+}
+
+  
+
+function triggerRivalry() {
+  if (!gameState.rivalries) gameState.rivalries = [];
+  const players = gameState.roster;
+  if (players.length < 2) return;
+
+  const p1 = players[Math.floor(Math.random() * players.length)];
+  let p2;
+  do {
+    p2 = players[Math.floor(Math.random() * players.length)];
+  } while (p1.name === p2.name);
+
+  const battle = `${p1.name} vs ${p2.name}`;
+  const post = `🔥 ${p1.name} called out ${p2.name} on social media! “I’m the real MVP.”`;
+
+  gameState.rivalries.push({ between: battle, year: gameState.year });
+  gameState.news.push(post);
+
+  // Morale shift
+  if (Math.random() < 0.5) {
+    p1.morale = "Fired Up";
+    p2.morale = "Annoyed";
+    gameState.news.push(`${p1.name} is now Fired Up. ${p2.name} is Annoyed.`);
+  }
+
+  // Fan/media reaction
+  const reactions = [
+    "📢 Fans are hyped for the showdown!",
+    "📺 Media is buzzing about the feud!",
+    "🔥 Rivalry trending #1 on social media!",
+    "🎤 Press conference tension is rising!"
+  ];
+  gameState.news.push(reactions[Math.floor(Math.random() * reactions.length)]);
+
+  localStorage.setItem('basketballGM', JSON.stringify(gameState));
+  return post;
+}
+ {
+  if (!gameState.rivalries) gameState.rivalries = [];
+
+  const players = gameState.roster;
+  if (players.length < 2) return;
+
+  const p1 = players[Math.floor(Math.random() * players.length)];
+  let p2;
+  do {
+    p2 = players[Math.floor(Math.random() * players.length)];
+  } while (p1.name === p2.name);
+
+  const battle = `${p1.name} vs ${p2.name}`;
+  const post = `🔥 ${p1.name} called out ${p2.name} on social media! “I’m the real MVP.”`;
+
+  gameState.rivalries.push({ between: battle, year: gameState.year });
+  gameState.news.push(post);
+
+  localStorage.setItem('basketballGM', JSON.stringify(gameState));
+  return post;
+}
+
+</script>
+<script>
+let startX = 0;
+document.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX;
+});
+document.addEventListener('touchend', e => {
+  let endX = e.changedTouches[0].clientX;
+  if (endX < startX - 50) goNext();
+  else if (endX > startX + 50) goBack();
+});
+function goNext() {
+  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
+  const current = window.location.pathname.split("/").pop();
+  const idx = order.indexOf(current);
+  if (idx >= 0 && idx < order.length - 1) window.location.href = order[idx + 1];
+}
+function goBack() {
+  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
+  const current = window.location.pathname.split("/").pop();
+  const idx = order.indexOf(current);
+  if (idx > 0) window.location.href = order[idx - 1];
+}
+
+
+function triggerRivalry() {
+  if (!gameState.rivalries) gameState.rivalries = [];
+  const players = gameState.roster;
+  if (players.length < 2) return;
+
+  const p1 = players[Math.floor(Math.random() * players.length)];
+  let p2;
+  do {
+    p2 = players[Math.floor(Math.random() * players.length)];
+  } while (p1.name === p2.name);
+
+  const battle = `${p1.name} vs ${p2.name}`;
+  const post = `🔥 ${p1.name} called out ${p2.name} on social media! “I’m the real MVP.”`;
+
+  gameState.rivalries.push({ between: battle, year: gameState.year });
+  gameState.news.push(post);
+
+  // Morale shift
+  if (Math.random() < 0.5) {
+    p1.morale = "Fired Up";
+    p2.morale = "Annoyed";
+    gameState.news.push(`${p1.name} is now Fired Up. ${p2.name} is Annoyed.`);
+  }
+
+  // Fan/media reaction
+  const reactions = [
+    "📢 Fans are hyped for the showdown!",
+    "📺 Media is buzzing about the feud!",
+    "🔥 Rivalry trending #1 on social media!",
+    "🎤 Press conference tension is rising!"
+  ];
+  gameState.news.push(reactions[Math.floor(Math.random() * reactions.length)]);
+
+  localStorage.setItem('basketballGM', JSON.stringify(gameState));
+  return post;
+}
+ {
+  if (!gameState.rivalries) gameState.rivalries = [];
+
+  const players = gameState.roster;
+  if (players.length < 2) return;
+
+  const p1 = players[Math.floor(Math.random() * players.length)];
+  let p2;
+  do {
+    p2 = players[Math.floor(Math.random() * players.length)];
+  } while (p1.name === p2.name);
+
+  const battle = `${p1.name} vs ${p2.name}`;
+  const post = `🔥 ${p1.name} called out ${p2.name} on social media! “I’m the real MVP.”`;
+
+  gameState.rivalries.push({ between: battle, year: gameState.year });
+  gameState.news.push(post);
+
+  localStorage.setItem('basketballGM', JSON.stringify(gameState));
+  return post;
+}
+
+</script>
+</body>
+</html>

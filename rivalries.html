@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🔥 Rivalries</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🔥 Player Rivalries</h1>
+  <button onclick="showRivalries()">View All Rivalries</button>
+  <pre id="output"></pre>
+  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+  <script>
+    const gameState = JSON.parse(localStorage.getItem('basketballGM')) || { rivalries: [] };
+
+    function showRivalries() {
+      if (!gameState.rivalries || gameState.rivalries.length === 0) {
+        document.getElementById('output').textContent = "No rivalries yet.";
+        return;
+      }
+      const lines = gameState.rivalries.map(r => `${r.year}: ${r.between}`);
+      document.getElementById('output').textContent = lines.join("\n");
+    }
+  </script>
+</body>
+</html>

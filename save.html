@@ -3,23 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🏀 Basketball GM Simulation</title>
+  <title>💾 Save / Load</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🏀 Basketball GM Simulation</h1>
+  <h1>💾 Save / Load</h1>
   
-  <div class="menu">
-    <a href="roster.html">📋 Team Roster</a>
-    <a href="draft.html">🎓 Draft Room</a>
-    <a href="trade.html">🔁 Trade Center</a>
-    <a href="playoffs.html">🏆 Playoffs</a>
-    <a href="news.html">📰 League News</a>
-    <a href="hall.html">🏅 Hall of Fame</a>
-    <a href="press.html">🎤 Press</a>
-    <a href="rivalries.html">🔥 Rivalries</a>
-    <a href="save.html">💾 Save/Load</a>
-  </div>
+  <button onclick="save()">Save Game</button>
+  <button onclick="load()">Load Game</button>
+  <pre id='output'></pre>
 
   <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
   <script>
@@ -35,6 +27,20 @@
       hallOfFame: []
     };
     
+function save() {
+  localStorage.setItem('basketballGM', JSON.stringify(gameState));
+  document.getElementById('output').textContent = "Game saved.";
+}
+function load() {
+  const save = localStorage.getItem('basketballGM');
+  if (save) {
+    const data = JSON.parse(save);
+    document.getElementById('output').textContent = "Game loaded for " + data.teamName;
+  } else {
+    document.getElementById('output').textContent = "No saved game found.";
+  }
+}
+
   </script>
 <script>
 let startX = 0;

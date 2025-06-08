@@ -3,23 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🏀 Basketball GM Simulation</title>
+  <title>🎓 Draft Room</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>🏀 Basketball GM Simulation</h1>
+  <h1>🎓 Draft Room</h1>
   
-  <div class="menu">
-    <a href="roster.html">📋 Team Roster</a>
-    <a href="draft.html">🎓 Draft Room</a>
-    <a href="trade.html">🔁 Trade Center</a>
-    <a href="playoffs.html">🏆 Playoffs</a>
-    <a href="news.html">📰 League News</a>
-    <a href="hall.html">🏅 Hall of Fame</a>
-    <a href="press.html">🎤 Press</a>
-    <a href="rivalries.html">🔥 Rivalries</a>
-    <a href="save.html">💾 Save/Load</a>
-  </div>
+  <button onclick="viewProspects()">View Prospects</button>
+  <pre id='output'></pre>
 
   <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
   <script>
@@ -35,6 +26,19 @@
       hallOfFame: []
     };
     
+function viewProspects() {
+  const prospects = [
+    {name:"Marcus King", position:"PG", college:"Duke"},
+    {name:"Leo Zhang", position:"C", college:"Gonzaga"},
+    {name:"Devonte Wells", position:"SF", college:"UCLA"}
+  ];
+  let text = "Draft Prospects:\n";
+  prospects.forEach(p => {
+    text += `${p.position} - ${p.name} (${p.college})\n`;
+  });
+  document.getElementById('output').textContent = text;
+}
+
   </script>
 <script>
 let startX = 0;
