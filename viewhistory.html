@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>📜 Game History</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    button { font-size: 18px; padding: 10px 20px; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    h3 { margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <h1>📜 Game History Log</h1>
+  <div id="historyLog"></div>
+  <button onclick="window.location.href='index.html'">🏠 Return to Menu</button>
+  <script>
+    const container = document.getElementById("historyLog");
+    const history = JSON.parse(localStorage.getItem("gmGameHistory") || "[]");
+
+    if (history.length === 0) {
+      container.innerHTML = "<p>No games played yet.</p>";
+    } else {
+      history.reverse().forEach((game, i) => {
+        const summary = document.createElement("div");
+        summary.innerHTML = `
+          <h3>Game #${history.length - i}</h3>
+          <p><strong>${game.teamA}</strong> vs <strong>${game.teamB}</strong></p>
+          <p><strong>Final:</strong> ${game.teamA} ${game.scoreA} - ${game.teamB} ${game.scoreB}</p>
+          <p><strong>Winner:</strong> ${game.winner}</p>
+          ${makeBox("Box Score - " + game.teamA, game.boxA)}
+          ${makeBox("Box Score - " + game.teamB, game.boxB)}
+          <hr>`;
+        container.appendChild(summary);
+      });
+    }
+
+    function makeBox(title, players) {
+      return `
+        <h4>${title}</h4>
+        <table>
+          <tr><th>Player</th><th>PTS</th><th>AST</th><th>REB</th><th>STL</th><th>BLK</th></tr>
+          ${players.map(p =>
+            `<tr><td>${p.name}</td><td>${p.pts}</td><td>${p.ast}</td><td>${p.reb}</td><td>${p.stl}</td><td>${p.blk}</td></tr>`
+          ).join("")}
+        </table>`;
+    }
+  </script>
+</body>
+</html>
