@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head><title>📅 Simulate Game</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<h1>📅 Simulate Game Day</h1>
+<button onclick="simulateGame()">🏀 Play Game</button>
+<pre id="result"></pre>
+<div id="pressBox" style="margin-top:1rem;"></div>
+<div id="socialBox" style="margin-top:1rem;"></div>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+<script>
+const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+gameState.gamesPlayed = gameState.gamesPlayed || 0;
+gameState.wins = gameState.wins || 0;
+gameState.losses = gameState.losses || 0;
+gameState.social = gameState.social || [];
+
+function simulateGame() {
+  const moraleScores = { "Icon": 5, "Leader": 4, "Neutral": 3, "Shocked": 2, "Unsettled": 1 };
+  const moraleSum = gameState.roster.reduce((sum, p) => sum + (moraleScores[p.morale] || 3), 0);
+  const chemistry = Math.round((moraleSum / (gameState.roster.length * 5)) * 100);
+  const baseStrength = gameState.roster.reduce((sum, p) => sum + p.rating, 0);
+  const adjustedStrength = baseStrength * (chemistry / 100);
+
+  const opponentStrength = 1500 + Math.floor(Math.random() * 500);
+  const win = adjustedStrength > opponentStrength;
+
+  if (win) {
+    gameState.wins++;
+    gameState.news = gameState.news || [];
+    gameState.news.push("🏆 Victory! Team pulled it off in dramatic fashion.");
+    gameState.social.push("🔥 Fans are hyped after that win!");
+  } else {
+    gameState.losses++;
+    gameState.news = gameState.news || [];
+    gameState.news.push("💥 Tough loss, media questioning coaching choices.");
+    gameState.social.push("😤 Why did the GM trade away our clutch shooter?");
+  }
+
+  gameState.gamesPlayed++;
+  gameState.roster.forEach(p => {
+    if (!p.morale) p.morale = "Neutral";
+    if (win && p.morale === "Neutral") p.morale = "Leader";
+    if (!win && p.morale === "Leader") p.morale = "Neutral";
+    if (!win && p.morale === "Neutral") p.morale = "Unsettled";
+  });
+
+  gameState.seasonLog = gameState.seasonLog || [];
+  gameState.seasonLog.push({ result: win ? "WIN" : "LOSS", approval: gameState.fans.approval, chemistry: chemistry });
+  
+  gameState.injuries = gameState.injuries || [];
+  gameState.roster.forEach(p => {
+    if (Math.random() < 0.1) {
+      gameState.injuries.push({ name: p.name, position: p.position, status: "Injured", gamesOut: Math.ceil(Math.random() * 3) });
+    }
+  });
+  localStorage.setItem("basketballGM", JSON.stringify(gameState));
+  document.getElementById("result").textContent = `Game #${gameState.gamesPlayed}: ${win ? 'WIN 🎉' : 'LOSS 😓'} | Chemistry: ${chemistry}%`;
+
+  simulatePress();
+  updateSocial();
+}
+
+function simulatePress() {
+  const options = [
+    "🎤 'We believe in our locker room.'",
+    "🎤 'No excuses, we must execute better.'",
+    "🎤 'It starts with me as GM.'"
+  ];
+  let pressHTML = "<h3>Post-Game Press Conference</h3>";
+  options.forEach((line, i) => {
+    pressHTML += `<button onclick="chooseAnswer(${i})">${line}</button><br/>`;
+  });
+  document.getElementById("pressBox").innerHTML = pressHTML;
+}
+
+function chooseAnswer(index) {
+  let moraleBoost = index === 0 ? 1 : index === 2 ? -1 : 0;
+  gameState.roster.forEach(p => {
+    if (!p.morale) p.morale = "Neutral";
+    if (moraleBoost === 1 && p.morale === "Neutral") p.morale = "Leader";
+    if (moraleBoost === -1 && p.morale === "Leader") p.morale = "Neutral";
+  });
+  gameState.social.push(index === 0 ? "💬 Fans appreciate the confidence!" :
+                        index === 2 ? "📉 Fans turning on the GM..." :
+                        "🤔 Fans cautiously optimistic.");
+  gameState.seasonLog = gameState.seasonLog || [];
+  gameState.seasonLog.push({ result: win ? "WIN" : "LOSS", approval: gameState.fans.approval, chemistry: chemistry });
+  
+  gameState.injuries = gameState.injuries || [];
+  gameState.roster.forEach(p => {
+    if (Math.random() < 0.1) {
+      gameState.injuries.push({ name: p.name, position: p.position, status: "Injured", gamesOut: Math.ceil(Math.random() * 3) });
+    }
+  });
+  localStorage.setItem("basketballGM", JSON.stringify(gameState));
+  document.getElementById("pressBox").innerHTML += `<p><strong>Press Answer Selected:</strong> ${index + 1}</p>`;
+  updateSocial();
+}
+
+function updateSocial() {
+  document.getElementById("socialBox").innerHTML = "<h3>Fan Comments</h3>" + gameState.social.slice(-5).map(c => `<p>${c}</p>`).join("");
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head><title>🏅 Weekly Leaders</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<h1>🏅 Weekly Player Stat Leaders</h1>
+<table border="1" cellpadding="6" style="width:100%;">
+<thead><tr><th>Name</th><th>PTS</th><th>REB</th><th>AST</th><th>Status</th></tr></thead>
+<tbody id="leaderTable"></tbody>
+</table>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+<script>
+const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+const table = document.getElementById("leaderTable");
+
+function generateStats() {
+  const stats = (gameState.roster || []).map(p => {
+    return {
+      name: p.name,
+      pts: Math.floor(p.rating * Math.random() * 0.5),
+      reb: Math.floor(p.rating * Math.random() * 0.2),
+      ast: Math.floor(p.rating * Math.random() * 0.15),
+      status: Math.random() < 0.1 ? "🚑 Injured" : "✅ Active"
+    };
+  }).sort((a, b) => b.pts - a.pts).slice(0, 5);
+
+  table.innerHTML = "";
+  stats.forEach(p => {
+    table.innerHTML += `<tr><td>${p.name}</td><td>${p.pts}</td><td>${p.reb}</td><td>${p.ast}</td><td>${p.status}</td></tr>`;
+  });
+}
+generateStats();
+</script>
+</body>
+</html>

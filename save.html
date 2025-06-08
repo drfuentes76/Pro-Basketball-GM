@@ -1,69 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>💾 Save / Load</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+<html>
+<head><title>💾 Save Manager</title><link rel="stylesheet" href="style.css"></head>
 <body>
-  <h1>💾 Save / Load</h1>
-  
-  <button onclick="save()">Save Game</button>
-  <button onclick="load()">Load Game</button>
-  <pre id='output'></pre>
-
-  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
-  <script>
-    const gameState = JSON.parse(localStorage.getItem('basketballGM')) || {
-      teamName: "Houston Rockets",
-      year: 2026,
-      roster: [
-        {name:"Jalen Green", position:"SG", rating:82},
-        {name:"Alperen Sengun", position:"C", rating:84},
-        {name:"Fred VanVleet", position:"PG", rating:80}
-      ],
-      news: [],
-      hallOfFame: []
-    };
-    
-function save() {
-  localStorage.setItem('basketballGM', JSON.stringify(gameState));
-  document.getElementById('output').textContent = "Game saved.";
-}
-function load() {
-  const save = localStorage.getItem('basketballGM');
-  if (save) {
-    const data = JSON.parse(save);
-    document.getElementById('output').textContent = "Game loaded for " + data.teamName;
-  } else {
-    document.getElementById('output').textContent = "No saved game found.";
+<h1>💾 Save Slot Manager</h1>
+<div>
+  <label>Slot Name:</label>
+  <input type="text" id="slotName" placeholder="My Franchise">
+  <button onclick="saveSlot()">💾 Save</button>
+</div>
+<div style="margin-top:1rem;">
+  <label>Select Save Slot:</label>
+  <select id="slotList"></select>
+  <button onclick="loadSlot()">📂 Load</button>
+</div>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+<script>
+function updateList() {
+  const slotList = document.getElementById("slotList");
+  slotList.innerHTML = "";
+  for (let key in localStorage) {
+    if (key.startsWith("slot_")) {
+      const opt = document.createElement("option");
+      opt.value = key;
+      opt.textContent = key.replace("slot_", "");
+      slotList.appendChild(opt);
+    }
   }
 }
 
-  </script>
-<script>
-let startX = 0;
-document.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-});
-document.addEventListener('touchend', e => {
-  let endX = e.changedTouches[0].clientX;
-  if (endX < startX - 50) goNext();
-  else if (endX > startX + 50) goBack();
-});
-function goNext() {
-  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
-  const current = window.location.pathname.split("/").pop();
-  const idx = order.indexOf(current);
-  if (idx >= 0 && idx < order.length - 1) window.location.href = order[idx + 1];
+function saveSlot() {
+  const name = document.getElementById("slotName").value.trim();
+  if (!name) return alert("Enter a slot name");
+  const gameState = localStorage.getItem("basketballGM");
+  localStorage.setItem("slot_" + name, gameState);
+  updateList();
+  alert("Game saved in slot: " + name);
 }
-function goBack() {
-  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
-  const current = window.location.pathname.split("/").pop();
-  const idx = order.indexOf(current);
-  if (idx > 0) window.location.href = order[idx - 1];
+
+function loadSlot() {
+  const key = document.getElementById("slotList").value;
+  if (!key) return;
+  const data = localStorage.getItem(key);
+  localStorage.setItem("basketballGM", data);
+  alert("Loaded slot: " + key.replace("slot_", ""));
 }
+updateList();
 </script>
 </body>
 </html>

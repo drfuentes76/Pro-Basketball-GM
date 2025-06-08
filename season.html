@@ -1,132 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📅 Season Simulation</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+<html>
+<head><title>📈 Season Standings</title><link rel="stylesheet" href="style.css"></head>
 <body>
-  <h1>📅 Full Season Simulator</h1>
-  <button onclick="simulateSeason()">Start Season</button>
-  <pre id="output"></pre>
-  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
-  <script>
-    const gameState = JSON.parse(localStorage.getItem('basketballGM')) || {
-      year: 2026,
-      teamName: "Houston Rockets",
-      record: { wins: 0, losses: 0 },
-      roster: [
-        { name: "Player A", rating: 82 },
-        { name: "Player B", rating: 79 },
-        { name: "Player C", rating: 85 }
-      ],
-      news: [],
-      leaders: []
-    };
+<h1>📈 Season Tracker</h1>
+<p><strong>Record:</strong> <span id="record">Loading...</span></p>
+<p><strong>Power Ranking:</strong> <span id="ranking">Calculating...</span></p>
+<table border="1" cellpadding="6" style="width:100%;margin-top:1rem;">
+  <thead>
+    <tr><th>Week</th><th>Result</th><th>Fan Approval</th><th>Chemistry</th></tr>
+  </thead>
+  <tbody id="logTable"></tbody>
+</table>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+<script>
+const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+gameState.seasonLog = gameState.seasonLog || [];
+const table = document.getElementById("logTable");
 
-    function simulateSeason() {
-  applyInjuriesAndSalaryCap();
-      const avgRating = gameState.roster.reduce((sum, p) => sum + p.rating, 0) / gameState.roster.length;
-      let wins = 0, losses = 0;
-      let log = "";
-      let stats = {};
-      const opponents = ["Lakers", "Celtics", "Suns", "Warriors", "Bucks", "Heat", "76ers", "Knicks"];
-      let standings = { "Lakers": 0, "Celtics": 0, "Suns": 0, "Warriors": 0, "Bucks": 0, "Heat": 0, "76ers": 0, "Knicks": 0 };
+function updateSeasonLog() {
+  const record = `W ${gameState.wins || 0} - L ${gameState.losses || 0}`;
+  document.getElementById("record").textContent = record;
 
-      for (let i = 1; i <= 82; i++) {
-        const opponent = opponents[Math.floor(Math.random() * opponents.length)];
-        const myScore = Math.floor(avgRating + Math.random() * 25 + 75);
-        const theirScore = Math.floor(Math.random() * 50 + 80);
-        const win = myScore > theirScore;
-        win ? wins++ : losses++;
-        standings[opponent] += win ? 0 : 1;
-        log += `Game ${i}: ${gameState.teamName} ${myScore}, ${opponent} ${theirScore} — ${win ? "Win" : "Loss"}\n`;
+  const approval = gameState.fans?.approval || 50;
+  const moraleScores = { "Icon": 5, "Leader": 4, "Neutral": 3, "Shocked": 2, "Unsettled": 1 };
+  const moraleSum = (gameState.roster || []).reduce((sum, p) => sum + (moraleScores[p.morale] || 3), 0);
+  const chemistry = Math.round((moraleSum / ((gameState.roster?.length || 1) * 5)) * 100);
 
-        gameState.roster.forEach(p => {
-          if (!stats[p.name]) stats[p.name] = { pts: 0, reb: 0, ast: 0 };
-          stats[p.name].pts += Math.floor(p.rating / 2 + Math.random() * 10);
-          stats[p.name].reb += Math.floor(Math.random() * 10);
-          stats[p.name].ast += Math.floor(Math.random() * 7);
-        });
-      }
+  const powerScore = (gameState.wins || 0) * 4 + chemistry + approval;
+  const rank = powerScore >= 180 ? "🏆 #1 Contender" :
+               powerScore >= 150 ? "🔥 Top 5 Team" :
+               powerScore >= 120 ? "💪 Playoff Hopeful" :
+               powerScore >= 90 ? "😬 Bubble Watch" : "📉 Rebuilding";
 
-      gameState.record = { wins, losses };
-      
-  if (!gameState.archive) gameState.archive = {};
-  gameState.roster.forEach(p => {
-    const entry = gameState.leaders.find(e => e.name === p.name);
-    if (!gameState.archive[p.name]) gameState.archive[p.name] = [];
-    if (entry) gameState.archive[p.name].push({ year: gameState.year - 1, ...entry });
+  document.getElementById("ranking").innerHTML = `<strong>${rank}</strong>`;
+
+  table.innerHTML = "";
+  gameState.seasonLog.slice(-12).forEach((g, i) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>Week ${i + 1}</td><td>${g.result}</td><td>${g.approval}%</td><td>${g.chemistry}%</td>`;
+    table.appendChild(row);
   });
-
-  
-  gameState.roster = gameState.roster.filter(p => {
-    if (p.age >= 35 || (p.injured && Math.random() < 0.4)) {
-      gameState.news.push(`📢 ${p.name} has retired from the league.`);
-      return false;
-    }
-    return true;
-  });
-
-  
-  const draftClass = [];
-  const names = ["Jordan", "Bryant", "Iverson", "Duncan", "Nash", "Curry", "James", "Durant", "Lillard"];
-  for (let i = 0; i < 10; i++) {
-    draftClass.push({
-      name: "Rookie " + names[Math.floor(Math.random() * names.length)] + " " + Math.floor(Math.random() * 100),
-      rating: Math.floor(Math.random() * 20 + 75),
-      age: 20,
-      salary: 3,
-      morale: "Excited"
-    });
-  }
-  gameState.roster.push(...draftClass.slice(0, 3)); // Draft top 3
-  gameState.news.push(`🎓 Drafted ${draftClass[0].name}, ${draftClass[1].name}, and ${draftClass[2].name}`);
-
-  gameState.year++;
-      gameState.news.push(`📅 ${gameState.year - 1} season record: ${wins}-${losses}.`);
-      gameState.leaders = Object.entries(stats).map(([name, stat]) => ({
-        name, ...stat
-      }));
-
-      gameState.leaders.sort((a, b) => b.pts - a.pts);
-
-      const topLeaders = gameState.leaders.slice(0, 5).map(l => (
-        `${l.name} - ${l.pts} pts, ${l.reb} reb, ${l.ast} ast`
-      )).join("\n");
-
-      const standingsDisplay = Object.entries(standings).map(([team, L]) => (
-        `${team}: ${82 - L} W - ${L} L`
-      )).join("\n");
-
-      localStorage.setItem('basketballGM', JSON.stringify(gameState));
-      document.getElementById("output").textContent =
-        `Season complete: ${wins}-${losses}\n\nTop Performers:\n${topLeaders}\n\nLeague Standings:\n${standingsDisplay}\n\n${log}`;
-    }
-  
-function applyInjuriesAndSalaryCap() {
-  let totalPayroll = 0;
-  gameState.roster.forEach(p => {
-    if (Math.random() < 0.12) {
-      p.injured = true;
-      p.rating = Math.max(50, p.rating - 5);
-      p.morale = "Injured";
-      gameState.news.push(`🚑 ${p.name} suffered a minor injury.`);
-    } else {
-      p.injured = false;
-    }
-    totalPayroll += p.salary || 5;
-  });
-
-  const salaryCap = 100;
-  if (totalPayroll > salaryCap) {
-    gameState.news.push(`💰 Cap exceeded! Total payroll $${totalPayroll}M (Cap: $${salaryCap}M)`);
-  } else {
-    gameState.news.push(`💰 Team payroll: $${totalPayroll}M`);
-  }
 }
 
+updateSeasonLog();
 </script>
 </body>
 </html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head><title>📣 Fan & Media Center</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<h1>📣 Fan Reactions & Press</h1>
+<p><strong>Fan Approval:</strong> <span id="approval"></span></p>
+<div id="newsBox" style="margin: 1rem 0;"></div>
+<button onclick="makeStatement()">📢 Make Public Statement</button>
+<pre id="response"></pre>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+<script>
+const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+gameState.fans = gameState.fans || { approval: 70 };
+
+const comments = [
+  "👏 Fans love the move and morale surges!",
+  "😐 Mixed reviews from fans, locker room quiet.",
+  "💢 Fans criticize your strategy, tension rises."
+];
+
+function updateApprovalDisplay() {
+  const score = gameState.fans.approval;
+  let color = score >= 80 ? "lime" : score >= 60 ? "orange" : "red";
+  document.getElementById("approval").innerHTML = `<strong style="color:${color};">${score}%</strong>`;
+}
+
+function makeStatement() {
+  const outcome = Math.floor(Math.random() * 3);
+  gameState.fans.approval += outcome === 0 ? 5 : outcome === 2 ? -10 : 0;
+  gameState.fans.approval = Math.max(0, Math.min(100, gameState.fans.approval));
+
+  if (!gameState.news) gameState.news = [];
+  gameState.news.push(`🗞️ GM Statement: ${comments[outcome]}`);
+
+  if (gameState.roster) {
+    gameState.roster.forEach(p => {
+      if (!p.morale) p.morale = "Neutral";
+      if (outcome === 0) p.morale = "Leader";
+      if (outcome === 2 && p.morale !== "Icon") p.morale = "Unsettled";
+    });
+  }
+
+  localStorage.setItem("basketballGM", JSON.stringify(gameState));
+  document.getElementById("response").textContent = `Statement issued: ${comments[outcome]}`;
+  updateApprovalDisplay();
+}
+
+updateApprovalDisplay();
+document.getElementById("newsBox").innerHTML = gameState.news?.slice(-5).map(n => `<p>${n}</p>`).join("");
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head><title>🏅 Awards Ceremony</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<h1>🏅 End of Season Awards</h1>
+<table border="1" cellpadding="6" style="width:100%;">
+<thead><tr><th>Award</th><th>Winner</th><th>Details</th></tr></thead>
+<tbody id="awardTable"></tbody>
+</table>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+<script>
+const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+const roster = gameState.roster || [];
+
+function selectAward(conditionFn, label) {
+  const eligible = roster.filter(conditionFn);
+  if (eligible.length === 0) return { name: "N/A", detail: "No eligible player" };
+  const winner = eligible[Math.floor(Math.random() * eligible.length)];
+  return {
+    name: winner.name,
+    detail: `${winner.position}, OVR ${winner.rating}`
+  };
+}
+
+function generateAwards() {
+  const table = document.getElementById("awardTable");
+const history = gameState.awardHistory || [];
+
+  const awards = [
+    {
+      title: "🏆 Most Valuable Player (MVP)",
+      pick: selectAward(p => p.rating >= 85, "MVP")
+    },
+    {
+      title: "🛡️ Defensive Player of the Year (DPOY)",
+      pick: selectAward(p => ["C", "PF", "SF"].includes(p.position) && p.rating >= 80, "DPOY")
+    },
+    {
+      title: "🌟 Rookie of the Year (ROTY)",
+      pick: selectAward(p => p.age <= 22, "ROTY")
+    }
+  ];
+
+  awards.forEach(a => {
+  history.push({ title: a.title, name: a.pick.name, detail: a.pick.detail });
+
+    table.innerHTML += `<tr><td>${a.title}</td><td>${a.pick.name}</td><td>${a.pick.detail}</td></tr>`;
+  });
+}
+gameState.awardHistory = history;
+localStorage.setItem("basketballGM", JSON.stringify(gameState));
+generateAwards();
+</script>
+</body>
+</html>
