@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head><title>🏀 Historical Rosters</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<h1>🏀 Load Historical Roster</h1>
+<select id="rosterSelect"></select>
+<button onclick="loadRoster()">Load Roster</button>
+<pre id="output"></pre>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+<script>
+let rosters = {};
+const select = document.getElementById("rosterSelect");
+
+fetch('historical_rosters.json')
+  .then(res => res.json())
+  .then(data => {
+    rosters = data;
+    Object.keys(rosters).forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
+    });
+  });
+
+function loadRoster() {
+  const name = select.value;
+  const roster = rosters[name];
+  const gameState = {
+    year: 2026,
+    teamName: name,
+    record: { wins: 0, losses: 0 },
+    roster: roster,
+    news: [`🕰️ Loaded historical team: ${name}`],
+    leaders: []
+  };
+  localStorage.setItem("basketballGM", JSON.stringify(gameState));
+  document.getElementById("output").textContent = `✅ Loaded ${name}`;
+}
+</script>
+</body>
+</html>

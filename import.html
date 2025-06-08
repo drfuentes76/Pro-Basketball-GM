@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head><title>🕰️ Import Historical Players</title><link rel="stylesheet" href="style.css" /></head>
+<body>
+  <h1>🕰️ Add Historical Players</h1>
+  <select id="histSelect"></select>
+  <button onclick="importPlayer()">Import Player</button>
+  <pre id="output"></pre>
+  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+  <script>
+    let historical = {};
+    const select = document.getElementById("histSelect");
+
+    fetch('historical_players.json')
+      .then(res => res.json())
+      .then(data => {
+        historical = data;
+        Object.keys(historical).forEach(name => {
+          const opt = document.createElement("option");
+          opt.value = name;
+          opt.textContent = name;
+          select.appendChild(opt);
+        });
+      });
+
+    function importPlayer() {
+      const name = select.value;
+      const player = historical[name];
+      const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+      player.name = name;
+      if (!gameState.roster) gameState.roster = [];
+      gameState.roster.push(player);
+      if (!gameState.news) gameState.news = [];
+      gameState.news.push(`🕰️ Imported ${name} into your team.`);
+      localStorage.setItem("basketballGM", JSON.stringify(gameState));
+      document.getElementById("output").textContent = `${name} added to roster.`;
+    }
+  </script>
+</body>
+</html>

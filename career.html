@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>📜 Career Stats</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>📜 Career History Viewer</h1>
+  <select id="playerSelect"></select>
+  <pre id="output"></pre>
+  <button onclick="viewCareer()">View Career</button>
+  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+  <script>
+    const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+    const select = document.getElementById("playerSelect");
+    const archive = gameState.archive || {};
+
+    Object.keys(archive).forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
+    });
+
+    function viewCareer() {
+      const name = select.value;
+      const entries = archive[name] || [];
+      let text = `${name}'s Career History:\n`;
+      entries.forEach(season => {
+        text += `Year ${season.year}: ${season.pts} pts, ${season.reb} reb, ${season.ast} ast\n`;
+      });
+      document.getElementById("output").textContent = text;
+    }
+  </script>
+</body>
+</html>

@@ -1,63 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🏀 Basketball GM Simulation</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+<html>
+<head><title>Main Menu</title><link rel="stylesheet" href="style.css"></head>
 <body>
-  <h1>🏀 Basketball GM Simulation</h1>
-  
-  <div class="menu">
-    <a href="roster.html">📋 Team Roster</a>
-    <a href="draft.html">🎓 Draft Room</a>
-    <a href="trade.html">🔁 Trade Center</a>
-    <a href="playoffs.html">🏆 Playoffs</a>
-    <a href="news.html">📰 League News</a>
-    <a href="hall.html">🏅 Hall of Fame</a>
-    <a href="press.html">🎤 Press</a>
-    <a href="rivalries.html">🔥 Rivalries</a>
-    <a href="save.html">💾 Save/Load</a>
-  </div>
-
-  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
-  <script>
-    const gameState = JSON.parse(localStorage.getItem('basketballGM')) || {
-      teamName: "Houston Rockets",
-      year: 2026,
-      roster: [
-        {name:"Jalen Green", position:"SG", rating:82},
-        {name:"Alperen Sengun", position:"C", rating:84},
-        {name:"Fred VanVleet", position:"PG", rating:80}
-      ],
-      news: [],
-      hallOfFame: []
-    };
-    
-  </script>
-<script>
-let startX = 0;
-document.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-});
-document.addEventListener('touchend', e => {
-  let endX = e.changedTouches[0].clientX;
-  if (endX < startX - 50) goNext();
-  else if (endX > startX + 50) goBack();
-});
-function goNext() {
-  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
-  const current = window.location.pathname.split("/").pop();
-  const idx = order.indexOf(current);
-  if (idx >= 0 && idx < order.length - 1) window.location.href = order[idx + 1];
-}
-function goBack() {
-  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
-  const current = window.location.pathname.split("/").pop();
-  const idx = order.indexOf(current);
-  if (idx > 0) window.location.href = order[idx - 1];
-}
-</script>
+<h1>🏀 Main Menu</h1>
+<a href="select_team.html">🏀 Start New Game</a>
+<a href="trade.html">💼 Trade Players</a>
+<a href="playoffs.html">🏆 Simulate Playoffs</a>
+<a href="free_agency.html">📝 Free Agency</a>
+<a href="career.html">📜 View Career Stats</a>
+<a href="import.html">🕰️ Import Historical Players</a>
+<a href="historical_rosters.html">🏀 Load Historical Roster</a>
 </body>
 </html>

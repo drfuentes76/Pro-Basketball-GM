@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>🏀 Select Team</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🏀 Choose Your NBA Team</h1>
+  <select id="teamSelect"></select>
+  <button onclick="loadTeam()">Confirm</button>
+  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+  <script>
+    const allTeams = JSON.parse(localStorage.getItem('nbaRosters')) || {};
+    const teamNames = Object.keys(allTeams);
+    const select = document.getElementById("teamSelect");
+
+    teamNames.forEach(team => {
+      const option = document.createElement("option");
+      option.value = team;
+      option.textContent = team;
+      select.appendChild(option);
+    });
+
+    function loadTeam() {
+      const team = select.value;
+      const roster = allTeams[team];
+      const gameState = {
+        year: 2026,
+        teamName: team,
+        record: { wins: 0, losses: 0 },
+        roster: roster,
+        news: [],
+        leaders: []
+      };
+      localStorage.setItem("basketballGM", JSON.stringify(gameState));
+      window.location.href = "season.html";
+    }
+
+    fetch('nba_rosters.json')
+      .then(res => res.json())
+      .then(data => localStorage.setItem("nbaRosters", JSON.stringify(data)));
+  </script>
+</body>
+</html>

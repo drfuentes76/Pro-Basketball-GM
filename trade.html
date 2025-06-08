@@ -1,169 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🔁 Trade Center</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+<html>
+<head><title>💼 Trades</title><link rel="stylesheet" href="style.css" /></head>
 <body>
-  <h1>🔁 Trade Center</h1>
-  
-  <button onclick="makeTrade()">Initiate Trade</button>
-  
-<select id="player-out"></select><br/>
-<input id="player-in-name" placeholder="Incoming Player Name"><br/>
-<input id="player-in-rating" placeholder="Incoming Rating" type="number"><br/>
-<input id="player-in-salary" placeholder="Incoming Salary" type="number"><br/>
-<button onclick="submitTrade()">Submit Trade</button>
-<pre id='output'></pre>
-
-
+  <h1>💼 Trade a Player</h1>
+  <select id="playerSelect"></select>
+  <button onclick="tradePlayer()">Trade</button>
+  <pre id="output"></pre>
   <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
   <script>
-    const gameState = JSON.parse(localStorage.getItem('basketballGM')) || {
-      teamName: "Houston Rockets",
-      year: 2026,
-      roster: [
-        {name:"Jalen Green", position:"SG", rating:82},
-        {name:"Alperen Sengun", position:"C", rating:84},
-        {name:"Fred VanVleet", position:"PG", rating:80}
-      ],
-      news: [],
-      hallOfFame: []
-    };
-    
-function makeTrade() {
-  const traded = gameState.roster.pop();
-  if (traded) {
-    let text = `Traded ${traded.name} for a 2nd round pick.`;
-    gameState.news.push(text);
-    localStorage.setItem('basketballGM', JSON.stringify(gameState));
-    document.getElementById('output').textContent = text;
-  } else {
-    document.getElementById('output').textContent = "No players left to trade.";
-  }
-}
+    const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+    const select = document.getElementById("playerSelect");
+    gameState.roster.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.name;
+      opt.textContent = p.name;
+      select.appendChild(opt);
+    });
 
-  
-function evaluateTrade(player) {
-  let value = player.rating * 1.2 - (player.age > 30 ? 10 : 0);
-  if (player.morale === "Happy") value += 5;
-  return value;
-}
-
-function attemptTrade(playerOut, playerIn) {
-  const outValue = evaluateTrade(playerOut);
-  const inValue = evaluateTrade(playerIn);
-  const salaryMatch = Math.abs(playerOut.salary - playerIn.salary) <= 5;
-  if (salaryMatch && outValue >= inValue * 0.9) {
-    gameState.roster = gameState.roster.filter(p => p.name !== playerOut.name);
-    gameState.roster.push(playerIn);
-    gameState.news.push(`Trade Success: Traded ${playerOut.name} for ${playerIn.name}`);
-    localStorage.setItem('basketballGM', JSON.stringify(gameState));
-    return "Trade successful!";
-  }
-  return "Trade rejected: value or salary mismatch.";
-}
-
-
-function populateTradeOptions() {
-  const outList = document.getElementById("player-out");
-  outList.innerHTML = "";
-  gameState.roster.forEach(p => {
-    const option = document.createElement("option");
-    option.value = p.name;
-    option.textContent = `${p.name} (OVR ${p.rating}, $${p.salary}M)`;
-    outList.appendChild(option);
-  });
-}
-
-function submitTrade() {
-  const outName = document.getElementById("player-out").value;
-  const inName = document.getElementById("player-in-name").value;
-  const inRating = parseInt(document.getElementById("player-in-rating").value);
-  const inSalary = parseFloat(document.getElementById("player-in-salary").value);
-
-  const playerOut = gameState.roster.find(p => p.name === outName);
-  const playerIn = { name: inName, rating: inRating, salary: inSalary, age: 26, morale: "Happy", position: "SG" };
-
-  const result = attemptTrade(playerOut, playerIn);
-  document.getElementById("output").textContent = result;
-  populateTradeOptions();
-}
-
-populateTradeOptions();
-</script>
-<script>
-let startX = 0;
-document.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-});
-document.addEventListener('touchend', e => {
-  let endX = e.changedTouches[0].clientX;
-  if (endX < startX - 50) goNext();
-  else if (endX > startX + 50) goBack();
-});
-function goNext() {
-  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
-  const current = window.location.pathname.split("/").pop();
-  const idx = order.indexOf(current);
-  if (idx >= 0 && idx < order.length - 1) window.location.href = order[idx + 1];
-}
-function goBack() {
-  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
-  const current = window.location.pathname.split("/").pop();
-  const idx = order.indexOf(current);
-  if (idx > 0) window.location.href = order[idx - 1];
-}
-
-function evaluateTrade(player) {
-  let value = player.rating * 1.2 - (player.age > 30 ? 10 : 0);
-  if (player.morale === "Happy") value += 5;
-  return value;
-}
-
-function attemptTrade(playerOut, playerIn) {
-  const outValue = evaluateTrade(playerOut);
-  const inValue = evaluateTrade(playerIn);
-  const salaryMatch = Math.abs(playerOut.salary - playerIn.salary) <= 5;
-  if (salaryMatch && outValue >= inValue * 0.9) {
-    gameState.roster = gameState.roster.filter(p => p.name !== playerOut.name);
-    gameState.roster.push(playerIn);
-    gameState.news.push(`Trade Success: Traded ${playerOut.name} for ${playerIn.name}`);
-    localStorage.setItem('basketballGM', JSON.stringify(gameState));
-    return "Trade successful!";
-  }
-  return "Trade rejected: value or salary mismatch.";
-}
-
-
-function populateTradeOptions() {
-  const outList = document.getElementById("player-out");
-  outList.innerHTML = "";
-  gameState.roster.forEach(p => {
-    const option = document.createElement("option");
-    option.value = p.name;
-    option.textContent = `${p.name} (OVR ${p.rating}, $${p.salary}M)`;
-    outList.appendChild(option);
-  });
-}
-
-function submitTrade() {
-  const outName = document.getElementById("player-out").value;
-  const inName = document.getElementById("player-in-name").value;
-  const inRating = parseInt(document.getElementById("player-in-rating").value);
-  const inSalary = parseFloat(document.getElementById("player-in-salary").value);
-
-  const playerOut = gameState.roster.find(p => p.name === outName);
-  const playerIn = { name: inName, rating: inRating, salary: inSalary, age: 26, morale: "Happy", position: "SG" };
-
-  const result = attemptTrade(playerOut, playerIn);
-  document.getElementById("output").textContent = result;
-  populateTradeOptions();
-}
-
-populateTradeOptions();
-</script>
+    function tradePlayer() {
+      const name = select.value;
+      const idx = gameState.roster.findIndex(p => p.name === name);
+      if (idx >= 0) {
+        const removed = gameState.roster.splice(idx, 1)[0];
+        const newGuy = {
+          name: "Tradee " + Math.floor(Math.random() * 1000),
+          position: "SF",
+          rating: Math.floor(Math.random() * 30 + 70),
+          age: 24,
+          morale: "Neutral"
+        };
+        gameState.roster.push(newGuy);
+        gameState.news.push(`🔁 Traded ${removed.name} for ${newGuy.name}`);
+        localStorage.setItem("basketballGM", JSON.stringify(gameState));
+        document.getElementById("output").textContent = `Traded ${removed.name} ➡️ ${newGuy.name}`;
+      }
+    }
+  </script>
 </body>
 </html>
