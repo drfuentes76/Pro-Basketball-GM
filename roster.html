@@ -1,62 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>📋 Team Roster</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+<html>
+<head><title>📋 View Roster</title><link rel="stylesheet" href="style.css"></head>
 <body>
-  <h1>📋 Team Roster</h1>
-  
-  <button onclick="showRoster()">Show Roster</button>
-  <pre id='output'></pre>
-
-  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
-  <script>
-    const gameState = JSON.parse(localStorage.getItem('basketballGM')) || {
-      teamName: "Houston Rockets",
-      year: 2026,
-      roster: [
-        {name:"Jalen Green", position:"SG", rating:82},
-        {name:"Alperen Sengun", position:"C", rating:84},
-        {name:"Fred VanVleet", position:"PG", rating:80}
-      ],
-      news: [],
-      hallOfFame: []
-    };
-    
-function showRoster() {
-  let text = "Your Roster:\n";
-  gameState.roster.forEach(p => {
-    text += `${p.position} - ${p.name} (OVR ${p.rating})\n`;
-  });
-  document.getElementById('output').textContent = text;
-}
-
-  </script>
+<h1>📋 Team Roster</h1>
+<table border="1" cellpadding="6" style="width:100%;">
+<thead><tr><th>Name</th><th>Position</th><th>OVR</th><th>Age</th><th>Morale</th></tr></thead>
+<tbody id="rosterTable"></tbody>
+</table>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
 <script>
-let startX = 0;
-document.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX;
-});
-document.addEventListener('touchend', e => {
-  let endX = e.changedTouches[0].clientX;
-  if (endX < startX - 50) goNext();
-  else if (endX > startX + 50) goBack();
-});
-function goNext() {
-  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
-  const current = window.location.pathname.split("/").pop();
-  const idx = order.indexOf(current);
-  if (idx >= 0 && idx < order.length - 1) window.location.href = order[idx + 1];
+const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+const table = document.getElementById("rosterTable");
+
+function displayRoster() {
+  const roster = gameState.roster || [];
+  table.innerHTML = "";
+  roster.forEach(p => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${p.name}</td><td>${p.position}</td><td>${p.rating}</td><td>${p.age || "?"}</td><td>${p.morale || "Neutral"}</td>`;
+    table.appendChild(row);
+  });
 }
-function goBack() {
-  const order = ["index.html", "roster.html", "draft.html", "trade.html", "playoffs.html", "news.html", "hall.html", "save.html"];
-  const current = window.location.pathname.split("/").pop();
-  const idx = order.indexOf(current);
-  if (idx > 0) window.location.href = order[idx - 1];
-}
+displayRoster();
 </script>
 </body>
 </html>
