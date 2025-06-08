@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head><title>📊 Editable Depth Chart</title><link rel="stylesheet" href="style.css"></head>
+<body>
+<h1>📊 Manage Depth Chart</h1>
+<h3>🏀 Starting Five Preview:</h3>
+<ul id="startingFive"></ul>
+<div id="depthManager"></div>
+<button onclick="saveDepthChart()">💾 Save Depth Chart</button>
+<div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
+
+<script>
+const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
+gameState.roster = gameState.roster || [];
+
+const positions = ["PG", "SG", "SF", "PF", "C"];
+
+function buildDepthChart() {
+  const container = document.getElementById("depthManager");
+  const starters = {};
+
+  let html = '<table border="1" cellpadding="6" style="width:100%">';
+  html += '<thead><tr><th>Name</th><th>OVR</th><th>Current Pos</th><th>Preferred Pos</th><th>Depth Rank</th></tr></thead><tbody>';
+
+  gameState.roster.forEach((player, i) => {
+    if (!player.depthRank) player.depthRank = 3;
+    if (!player.preferred) player.preferred = player.position;
+    html += `<tr>
+      <td>${player.name}</td>
+      <td>${player.rating}</td>
+      <td>${player.position}</td>
+      <td>
+        <select onchange="setPreferred(${i}, this.value)">
+          ${positions.map(pos => `<option value="${pos}" ${player.preferred === pos ? 'selected' : ''}>${pos}</option>`).join('')}
+        </select>
+      </td>
+      <td>
+        <select onchange="setRank(${i}, this.value)">
+          <option value="1" ${player.depthRank == 1 ? "selected" : ""}>Starter</option>
+          <option value="2" ${player.depthRank == 2 ? "selected" : ""}>Backup 1</option>
+          <option value="3" ${player.depthRank == 3 ? "selected" : ""}>Backup 2</option>
+        </select>
+      </td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
+
+  const five = positions.map(pos => {
+    const starter = gameState.roster.find(p => p.preferred === pos && p.depthRank == 1);
+    return `<li>${pos}: ${starter ? `${starter.name} (OVR ${starter.rating})` : "No Starter Assigned"}</li>`;
+  });
+  document.getElementById("startingFive").innerHTML = five.join('');
+}
+
+function setPreferred(index, value) {
+  gameState.roster[index].preferred = value;
+  buildDepthChart();
+}
+
+function setRank(index, value) {
+  gameState.roster[index].depthRank = parseInt(value);
+  buildDepthChart();
+}
+
+function saveDepthChart() {
+  localStorage.setItem("basketballGM", JSON.stringify(gameState));
+  alert("Depth chart saved!");
+}
+
+buildDepthChart();
+</script>
+</body>
+</html>
