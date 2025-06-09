@@ -1,44 +1,15 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🏆 Playoffs</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Playoffs</title>
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-  <h1>🏆 Simulate Playoffs</h1>
-  <button onclick="simulatePlayoffs()">Start Playoffs</button>
-  <pre id="output"></pre>
-  <div class="nav"><a href="index.html">⬅️ Main Menu</a></div>
-  <script>
-    const gameState = JSON.parse(localStorage.getItem("basketballGM")) || {};
-    const standings = JSON.parse(localStorage.getItem("standings")) || {};
-
-    function simulatePlayoffs() {
-      const sorted = Object.entries(standings)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 8)
-        .map(([team]) => team);
-
-      let log = "🏆 Playoff Bracket:\n";
-      while (sorted.length > 1) {
-        let nextRound = [];
-        for (let i = 0; i < sorted.length; i += 2) {
-          const t1 = sorted[i], t2 = sorted[i+1];
-          const winner = Math.random() < 0.5 ? t1 : t2;
-          nextRound.push(winner);
-          log += `${t1} vs ${t2} ➡️ ${winner}\n`;
-        }
-        sorted.splice(0, sorted.length, ...nextRound);
-        log += "\n";
-      }
-
-      const champ = sorted[0];
-      gameState.news.push(`🏆 ${gameState.year - 1} Champion: ${champ}`);
-      localStorage.setItem("basketballGM", JSON.stringify(gameState));
-      document.getElementById("output").textContent = log + `\nChampions: ${champ}`;
-    }
-  </script>
+    <h1>Playoffs</h1>
+    <p>This is the Playoffs screen.</p>
+    <button onclick="window.location.href='../main.html'">Return to Home</button>
+<script><!-- Playoff bracket generation and game simulation --></script>
 </body>
 </html>

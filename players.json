@@ -1,32 +1,30 @@
 [
-  {
-    "name": "James Harden",
-    "position": "SG",
-    "rating": 88,
-    "age": 34,
-    "contractYears": 2,
-    "salary": 38.5,
-    "morale": "Neutral",
-    "team": "Houston Rockets"
-  },
-  {
-    "name": "Alperen Sengun",
-    "position": "C",
-    "rating": 83,
-    "age": 22,
-    "contractYears": 3,
-    "salary": 12.5,
-    "morale": "Happy",
-    "team": "Houston Rockets"
-  },
-  {
-    "name": "Jalen Green",
-    "position": "SG",
-    "rating": 81,
-    "age": 23,
-    "contractYears": 2,
-    "salary": 9.0,
-    "morale": "Neutral",
-    "team": "Houston Rockets"
-  }
+    {
+        "id": 101,
+        "name": "LeBron James",
+        "team_id": 1,
+        "position": "SF",
+        "ovr": 96,
+        "age": 39,
+        "contract": {
+            "years": 2,
+            "salary": 44
+        },
+        "stats": {},
+        "status": "Active"
+    },
+    {
+        "id": 102,
+        "name": "Jayson Tatum",
+        "team_id": 2,
+        "position": "SF",
+        "ovr": 91,
+        "age": 26,
+        "contract": {
+            "years": 4,
+            "salary": 35
+        },
+        "stats": {},
+        "status": "Active"
+    }
 ]
