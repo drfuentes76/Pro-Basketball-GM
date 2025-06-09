@@ -1,27 +1,22 @@
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Standings</title>
-    <link rel="stylesheet" href="../style.css">
-</head>
+<html>
+<head><title>Standings</title></head>
 <body>
-    <h1>Standings</h1>
-    <p>This is the Standings screen.</p>
-    <button onclick="window.location.href='../main.html'">Return to Home</button>
-<script><!-- JS to display team standings by division --></script>
-<div id='standings'></div>
+<h1>Team Standings</h1>
+<div id="standings"></div>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
 <script>
-function showStandings() {
-    fetch('../data/teams.json')
-    .then(res => res.json())
-    .then(teams => {
-        let list = teams.map(t => `<li>${t.name} - Record: ${Math.floor(Math.random()*60)}-${Math.floor(Math.random()*22)}</li>`).join('');
-        document.getElementById('standings').innerHTML = `<ul>${list}</ul>`;
-    });
+function loadStandings() {
+    const standings = [
+        { team: "Lakers", wins: Math.floor(Math.random()*60), losses: Math.floor(Math.random()*22) },
+        { team: "Celtics", wins: Math.floor(Math.random()*60), losses: Math.floor(Math.random()*22) },
+        { team: "Heat", wins: Math.floor(Math.random()*60), losses: Math.floor(Math.random()*22) }
+    ];
+    document.getElementById('standings').innerHTML = "<ul>" +
+        standings.map(t => `<li>${t.team} - ${t.wins}W / ${t.losses}L</li>`).join('') + "</ul>";
 }
-window.onload = showStandings;
+window.onload = loadStandings;
 </script>
 </body>
 </html>

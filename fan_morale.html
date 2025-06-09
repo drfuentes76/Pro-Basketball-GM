@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Fanbase Morale</title></head>
+<body>
+<h1>Fanbase Morale System</h1>
+<div id="moraleStatus"></div>
+<button onclick="makeMove('trade_star')">Trade Star Player</button>
+<button onclick="makeMove('sign_legend')">Sign Legend</button>
+<button onclick="makeMove('raise_ticket_prices')">Raise Ticket Prices</button>
+<button onclick="makeMove('win_championship')">Win Championship</button>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
+<script>
+let fanMorale = JSON.parse(localStorage.getItem("fanMorale") || '{"score": 75, "log": []}');
+
+function updateDisplay() {
+    const moraleDisplay = document.getElementById("moraleStatus");
+    moraleDisplay.innerHTML = "<p><strong>Fan Morale:</strong> " + fanMorale.score + " / 100</p>" +
+        "<ul>" + fanMorale.log.slice(-5).map(e => "<li>" + e + "</li>").join("") + "</ul>";
+}
+
+function makeMove(action) {
+    switch(action) {
+        case 'trade_star':
+            fanMorale.score -= 15;
+            fanMorale.log.push("Traded a fan-favorite player. Morale dropped.");
+            break;
+        case 'sign_legend':
+            fanMorale.score += 20;
+            fanMorale.log.push("Signed a legendary player! Fans excited.");
+            break;
+        case 'raise_ticket_prices':
+            fanMorale.score -= 10;
+            fanMorale.log.push("Raised ticket prices. Fans angry.");
+            break;
+        case 'win_championship':
+            fanMorale.score += 25;
+            fanMorale.log.push("Won the championship! Fans elated.");
+            break;
+    }
+    fanMorale.score = Math.max(0, Math.min(100, fanMorale.score));
+    localStorage.setItem("fanMorale", JSON.stringify(fanMorale));
+    updateDisplay();
+}
+
+window.onload = updateDisplay;
+</script>
+</body>
+</html>

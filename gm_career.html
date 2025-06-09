@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>GM Career Mode</title></head>
+<body>
+<h1>General Manager Career Mode</h1>
+<div id="careerStatus"></div>
+<button onclick="simulateSeasonOutcome()">Simulate Season Result</button>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
+<script>
+let gmCareer = JSON.parse(localStorage.getItem("gmCareer") || '{"seasons": 0, "firings": 0, "rehireOffers": 0, "titles": 0, "jobs": ["Initial Team"], "status": "Employed"}');
+let approvalData = JSON.parse(localStorage.getItem("franchiseApproval") || '{"score": 80}');
+let fanMorale = JSON.parse(localStorage.getItem("fanMorale") || '{"score": 75}');
+
+function simulateSeasonOutcome() {
+    gmCareer.seasons++;
+    let message = "";
+
+    if (approvalData.score < 35 && gmCareer.status === "Employed") {
+        gmCareer.firings++;
+        gmCareer.status = "Fired";
+        message = "🚨 You were fired after a disappointing season!";
+    } else if (approvalData.score >= 85 && Math.random() < 0.5) {
+        gmCareer.rehireOffers++;
+        gmCareer.status = "Rehired";
+        let newTeam = "Team " + (Math.floor(Math.random() * 20) + 1);
+        gmCareer.jobs.push(newTeam);
+        gmCareer.status = "Employed";
+        message = `📩 You were offered a job with ${newTeam} and accepted!`;
+    } else if (Math.random() < 0.25) {
+        gmCareer.titles++;
+        message = "🏆 You won a championship this season!";
+    } else {
+        message = "📊 You completed a standard season.";
+    }
+
+    localStorage.setItem("gmCareer", JSON.stringify(gmCareer));
+    updateDisplay(message);
+}
+
+function updateDisplay(message = "") {
+    document.getElementById("careerStatus").innerHTML = `
+        <p><strong>Status:</strong> ${gmCareer.status}</p>
+        <p><strong>Seasons Managed:</strong> ${gmCareer.seasons}</p>
+        <p><strong>Championships Won:</strong> ${gmCareer.titles}</p>
+        <p><strong>Times Fired:</strong> ${gmCareer.firings}</p>
+        <p><strong>Rehire Offers:</strong> ${gmCareer.rehireOffers}</p>
+        <p><strong>Teams Managed:</strong> ${gmCareer.jobs.join(", ")}</p>
+        <p style="margin-top: 10px;"><em>${message}</em></p>
+    `;
+}
+
+window.onload = () => updateDisplay();
+</script>
+</body>
+</html>

@@ -1,28 +1,95 @@
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Awards</title>
-    <link rel="stylesheet" href="../style.css">
-</head>
+<html>
+<head><title>Season Summary</title></head>
 <body>
-    <h1>Awards</h1>
-    <p>This is the Awards screen.</p>
-    <button onclick="window.location.href='../main.html'">Return to Home</button>
-<script><!-- JS for calculating and displaying league awards --></script>
-<div id='awardsList'></div>
+<h1>Season Summary: Awards, Playoffs, and Leaders</h1>
+<div id="leaders"></div>
+<div id="awards"></div>
+<div id="playoffs"></div>
+<div id="history"></div>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
 <script>
-function showAwards() {
-    let awards = [
-        { title: "MVP", player: "LeBron James" },
-        { title: "Rookie of the Year", player: "John Doe" },
-        { title: "Defensive Player of the Year", player: "Sam Smith" },
-        { title: "Most Improved", player: "Jayson Tatum" }
+function generateSeasonSummary() {
+    const teams = [
+        "Lakers", "Celtics", "Heat", "Bulls",
+        "Warriors", "Knicks", "Suns", "76ers",
+        "Mavericks", "Bucks", "Rockets", "Nuggets"
     ];
-    document.getElementById('awardsList').innerHTML = "<ul>" + awards.map(a => `<li>${a.title}: ${a.player}</li>`).join('') + "</ul>";
+
+    const standings = teams.map(name => ({
+        name,
+        wins: Math.floor(Math.random() * 60 + 22)
+    })).sort((a, b) => b.wins - a.wins);
+
+    const playoffTeams = standings.slice(0, 8);
+    const rounds = ["Quarterfinals", "Semifinals", "Finals"];
+    const playoffLog = [];
+
+    let currentRoundTeams = playoffTeams.map(t => t.name);
+    for (let r = 0; r < rounds.length; r++) {
+        let nextRound = [];
+        for (let i = 0; i < currentRoundTeams.length; i += 2) {
+            const teamA = currentRoundTeams[i];
+            const teamB = currentRoundTeams[i + 1];
+            const winner = Math.random() > 0.5 ? teamA : teamB;
+            playoffLog.push(`${rounds[r]}: ${teamA} vs ${teamB} → Winner: ${winner}`);
+            nextRound.push(winner);
+        }
+        currentRoundTeams = nextRound;
+    }
+
+    const champion = currentRoundTeams[0];
+
+    const awards = [
+        { title: "MVP", player: "Nikola Jokic" },
+        { title: "Rookie of the Year", player: "Victor Wembanyama" },
+        { title: "Defensive Player", player: "Jaren Jackson Jr." },
+        { title: "Sixth Man", player: "Malik Monk" },
+        { title: "Most Improved", player: "Tyrese Maxey" },
+        { title: "Coach of the Year", player: "Joe Mazzulla" },
+        { title: "Finals MVP", player: champion === "Lakers" ? "LeBron James" : "Jayson Tatum" }
+    ];
+
+    const leaders = [
+        { stat: "Points Per Game", player: "Luka Doncic", value: "32.5" },
+        { stat: "Assists Per Game", player: "Tyrese Haliburton", value: "10.8" },
+        { stat: "Rebounds Per Game", player: "Domantas Sabonis", value: "12.4" }
+    ];
+
+    // Save data to localStorage
+    const year = new Date().getFullYear();
+    const history = JSON.parse(localStorage.getItem("seasonHistory") || "[]");
+    history.push({
+        year,
+        champion,
+        awards,
+        leaders
+    });
+    localStorage.setItem("seasonHistory", JSON.stringify(history));
+
+    // Display current season
+    document.getElementById("leaders").innerHTML = "<h2>League Leaders</h2><ul>" +
+        leaders.map(l => `<li>${l.stat}: ${l.player} (${l.value})</li>`).join('') + "</ul>";
+
+    document.getElementById("awards").innerHTML = "<h2>Awards</h2><ul>" +
+        awards.map(a => `<li>${a.title}: ${a.player}</li>`).join('') + "</ul>";
+
+    document.getElementById("playoffs").innerHTML = "<h2>Playoffs</h2><ul>" +
+        playoffLog.map(p => `<li>${p}</li>`).join('') + `<li><strong>Champion: ${champion}</strong></li></ul>`;
+
+    // Display full history
+    document.getElementById("history").innerHTML = "<h2>Championship History</h2>" + history.map(season => `
+        <h3>${season.year}</h3>
+        <p><strong>Champion:</strong> ${season.champion}</p>
+        <p><strong>Awards:</strong></p>
+        <ul>${season.awards.map(a => `<li>${a.title}: ${a.player}</li>`).join('')}</ul>
+        <p><strong>Leaders:</strong></p>
+        <ul>${season.leaders.map(l => `<li>${l.stat}: ${l.player} (${l.value})</li>`).join('')}</ul>
+    `).join('');
 }
-window.onload = showAwards;
+
+window.onload = generateSeasonSummary;
 </script>
 </body>
 </html>

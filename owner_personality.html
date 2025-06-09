@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Owner Personality System</title></head>
+<body>
+<h1>Owner Feedback System</h1>
+<div id="feedbackDisplay"></div>
+<button onclick="evaluateGM()">Evaluate General Manager</button>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
+<script>
+let fanMorale = JSON.parse(localStorage.getItem("fanMorale") || '{"score": 75, "log": []}');
+let approvalData = JSON.parse(localStorage.getItem("franchiseApproval") || '{"score": 80, "seasons": 0, "history": []}');
+let personality = localStorage.getItem("ownerPersonality");
+
+if (!personality) {
+    const types = ["Strict", "Patient", "Unpredictable", "Fan-Focused"];
+    personality = types[Math.floor(Math.random() * types.length)];
+    localStorage.setItem("ownerPersonality", personality);
+}
+
+function evaluateGM() {
+    const recentSeason = JSON.parse(localStorage.getItem("seasonHistory") || "[]").slice(-1)[0];
+    let seasonSuccess = 0;
+
+    if (recentSeason) {
+        if (recentSeason.champion) seasonSuccess += 15;
+        seasonSuccess += recentSeason.awards.filter(a => a.title === "MVP").length * 5;
+    }
+
+    const moraleFactor = fanMorale.score - 50;
+    const seasonScore = Math.round(moraleFactor * 0.3 + seasonSuccess);
+
+    let baseScore = seasonScore;
+    let reaction = "";
+    let consequence = "";
+
+    switch (personality) {
+        case "Strict":
+            baseScore -= 5;
+            if (approvalData.score + baseScore < 40) consequence = "🔴 Owner issues a termination warning!";
+            reaction = "Owner is demanding and expects excellence.";
+            break;
+        case "Patient":
+            baseScore += 5;
+            reaction = "Owner remains patient, values long-term success.";
+            break;
+        case "Unpredictable":
+            baseScore += Math.floor(Math.random() * 11) - 5;
+            reaction = "Owner's response seems random and volatile.";
+            break;
+        case "Fan-Focused":
+            baseScore += (fanMorale.score - 50) * 0.2;
+            reaction = "Owner listens to fans and adjusts expectations accordingly.";
+            break;
+    }
+
+    approvalData.score += Math.round(baseScore);
+    approvalData.score = Math.max(0, Math.min(100, approvalData.score));
+    approvalData.seasons++;
+    approvalData.history.push({ year: new Date().getFullYear(), score: approvalData.score });
+
+    localStorage.setItem("franchiseApproval", JSON.stringify(approvalData));
+
+    const html = `
+        <h3>Owner Personality: ${personality}</h3>
+        <p><strong>Feedback:</strong> ${reaction}</p>
+        <p><strong>Approval Score:</strong> ${approvalData.score} / 100</p>
+        ${consequence ? `<p style='color:red;'>${consequence}</p>` : ""}
+        <h3>Season History</h3>
+        <ul>${approvalData.history.map(h => `<li>${h.year}: ${h.score} Approval</li>`).join('')}</ul>
+    `;
+
+    document.getElementById("feedbackDisplay").innerHTML = html;
+}
+</script>
+</body>
+</html>

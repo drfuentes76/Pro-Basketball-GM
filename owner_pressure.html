@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Franchise Approval & Owner Pressure</title></head>
+<body>
+<h1>Franchise Approval & Owner Pressure</h1>
+<div id="approvalStatus"></div>
+<button onclick="simulateOwnerFeedback()">Get Owner Feedback</button>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
+<script>
+let fanMorale = JSON.parse(localStorage.getItem("fanMorale") || '{"score": 75, "log": []}');
+let approvalData = JSON.parse(localStorage.getItem("franchiseApproval") || '{"score": 80, "seasons": 0, "history": []}');
+
+function calculateApproval() {
+    const recentSeason = JSON.parse(localStorage.getItem("seasonHistory") || "[]").slice(-1)[0];
+    let seasonSuccess = 0;
+    if (recentSeason) {
+        seasonSuccess += recentSeason.champion ? 15 : 0;
+        seasonSuccess += recentSeason.awards.filter(a => a.title === "MVP").length * 5;
+    }
+    const moraleFactor = fanMorale.score - 50; // morale above 50 is positive
+    const seasonScore = Math.round(moraleFactor * 0.3 + seasonSuccess);
+    approvalData.score += seasonScore;
+    approvalData.score = Math.max(0, Math.min(100, approvalData.score));
+    approvalData.seasons += 1;
+    approvalData.history.push({ year: new Date().getFullYear(), score: approvalData.score });
+    localStorage.setItem("franchiseApproval", JSON.stringify(approvalData));
+}
+
+function simulateOwnerFeedback() {
+    calculateApproval();
+    let message;
+    if (approvalData.score >= 85) {
+        message = "Owner says: 'Fantastic work. You're securing a dynasty.'";
+    } else if (approvalData.score >= 65) {
+        message = "Owner says: 'Good job. Keep us competitive.'";
+    } else if (approvalData.score >= 45) {
+        message = "Owner says: 'You’re on thin ice. We expect results soon.'";
+    } else {
+        message = "Owner says: 'This isn’t working. Your job is at risk.'";
+    }
+
+    let html = `<p><strong>Franchise Approval:</strong> ${approvalData.score} / 100</p>`;
+    html += `<p>${message}</p><h3>Season History</h3><ul>`;
+    html += approvalData.history.map(h => `<li>${h.year}: ${h.score} Approval</li>`).join('');
+    html += "</ul>";
+    document.getElementById("approvalStatus").innerHTML = html;
+}
+
+window.onload = simulateOwnerFeedback;
+</script>
+</body>
+</html>

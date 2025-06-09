@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Owner Profile System</title></head>
+<body>
+<h1>Team Owner Profile</h1>
+<div id="ownerProfile"></div>
+<div id="overrideNotice"></div>
+<button onclick="evaluateSeason()">Evaluate Season</button>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
+<script>
+let fanMorale = JSON.parse(localStorage.getItem("fanMorale") || '{"score": 75, "log": []}');
+let approvalData = JSON.parse(localStorage.getItem("franchiseApproval") || '{"score": 80, "seasons": 0, "history": []}');
+let profile = JSON.parse(localStorage.getItem("ownerProfile"));
+
+const ownerTemplates = [
+    {
+        name: "Charles Stone",
+        personality: "Strict",
+        bio: "A no-nonsense billionaire who expects immediate results and titles."
+    },
+    {
+        name: "Linda Rose",
+        personality: "Patient",
+        bio: "A former player turned executive who values loyalty and steady growth."
+    },
+    {
+        name: "Viktor Dragovich",
+        personality: "Unpredictable",
+        bio: "An eccentric international investor known for erratic decisions."
+    },
+    {
+        name: "Ashley Park",
+        personality: "Fan-Focused",
+        bio: "A social media-savvy tech mogul who treats fan approval as law."
+    }
+];
+
+if (!profile) {
+    profile = ownerTemplates[Math.floor(Math.random() * ownerTemplates.length)];
+    localStorage.setItem("ownerProfile", JSON.stringify(profile));
+}
+
+function evaluateSeason() {
+    const recentSeason = JSON.parse(localStorage.getItem("seasonHistory") || "[]").slice(-1)[0];
+    let seasonSuccess = 0;
+
+    if (recentSeason) {
+        if (recentSeason.champion) seasonSuccess += 15;
+        seasonSuccess += recentSeason.awards.filter(a => a.title === "MVP").length * 5;
+    }
+
+    const moraleFactor = fanMorale.score - 50;
+    const baseScore = Math.round(moraleFactor * 0.3 + seasonSuccess);
+
+    let adjustedScore = baseScore;
+    let consequence = "";
+
+    switch (profile.personality) {
+        case "Strict":
+            adjustedScore -= 5;
+            if (approvalData.score + adjustedScore < 35) {
+                consequence = "🚨 You have been terminated by the owner.";
+            }
+            break;
+        case "Patient":
+            adjustedScore += 5;
+            break;
+        case "Unpredictable":
+            adjustedScore += Math.floor(Math.random() * 11) - 5;
+            break;
+        case "Fan-Focused":
+            adjustedScore += (fanMorale.score - 50) * 0.2;
+            break;
+    }
+
+    approvalData.score += adjustedScore;
+    approvalData.score = Math.max(0, Math.min(100, approvalData.score));
+    approvalData.seasons++;
+    approvalData.history.push({ year: new Date().getFullYear(), score: approvalData.score });
+    localStorage.setItem("franchiseApproval", JSON.stringify(approvalData));
+
+    document.getElementById("overrideNotice").innerHTML = consequence 
+        ? `<p style='color:red;'>${consequence}</p>` 
+        : `<p>Owner continues to monitor your performance.</p>`;
+
+    showProfile();
+}
+
+function showProfile() {
+    document.getElementById("ownerProfile").innerHTML = `
+        <h2>${profile.name}</h2>
+        <p><strong>Personality:</strong> ${profile.personality}</p>
+        <p><em>${profile.bio}</em></p>
+        <p><strong>Current Approval:</strong> ${approvalData.score} / 100</p>
+    `;
+}
+
+window.onload = showProfile;
+</script>
+</body>
+</html>

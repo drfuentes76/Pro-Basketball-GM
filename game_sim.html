@@ -1,22 +1,23 @@
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Game Sim</title>
-    <link rel="stylesheet" href="../style.css">
-</head>
+<html>
+<head><title>Game Simulation</title></head>
 <body>
-    <h1>Game Sim</h1>
-    <p>This is the Game Sim screen.</p>
-    <button onclick="window.location.href='../main.html'">Return to Home</button>
-<script><!-- JS for individual game simulation and play-by-play output --></script>
-<div id='gameResult'></div>
+<h1>Game Simulation</h1>
+<div id="gameResult"></div>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
 <script>
 function simulateGame() {
-    let result = Math.random() > 0.5 ? "You win!" : "You lose!";
-    document.getElementById('gameResult').innerText = result;
+    const teams = ["Lakers", "Celtics"];
+    const home = teams[0];
+    const away = teams[1];
+    const homeScore = Math.floor(Math.random() * 50 + 80);
+    const awayScore = Math.floor(Math.random() * 50 + 80);
+    const result = `<strong>${home} ${homeScore}</strong> - <strong>${away} ${awayScore}</strong><br>` +
+                   (homeScore > awayScore ? `${home} wins!` : `${away} wins!`);
+    document.getElementById('gameResult').innerHTML = result;
 }
+window.onload = simulateGame;
 </script>
 </body>
 </html>

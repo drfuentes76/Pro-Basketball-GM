@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Hall of Fame</title></head>
+<body>
+<h1>Hall of Fame</h1>
+<div id="hofPlayers"></div>
+<div id="hofTeams"></div>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
+<script>
+function buildHallOfFame() {
+    const history = JSON.parse(localStorage.getItem("seasonHistory") || "[]");
+    const playerAwards = {};
+    const teamTitles = {};
+
+    history.forEach(season => {
+        // Track championship
+        const champ = season.champion;
+        if (!teamTitles[champ]) teamTitles[champ] = 0;
+        teamTitles[champ]++;
+
+        // Track awards
+        season.awards.forEach(a => {
+            const player = a.player;
+            if (!playerAwards[player]) {
+                playerAwards[player] = 0;
+            }
+            playerAwards[player]++;
+        });
+    });
+
+    // Players with 3+ awards make the Hall
+    const hofPlayers = Object.entries(playerAwards)
+        .filter(([_, count]) => count >= 3)
+        .sort((a, b) => b[1] - a[1]);
+
+    // Teams with 3+ titles make the Hall
+    const hofTeams = Object.entries(teamTitles)
+        .filter(([_, count]) => count >= 3)
+        .sort((a, b) => b[1] - a[1]);
+
+    // Display
+    document.getElementById("hofPlayers").innerHTML = "<h2>Player Inductees</h2><ul>" +
+        hofPlayers.map(([name, count]) => `<li><strong>${name}</strong> — ${count} Major Awards</li>`).join('') + "</ul>";
+
+    document.getElementById("hofTeams").innerHTML = "<h2>Team Inductees</h2><ul>" +
+        hofTeams.map(([name, count]) => `<li><strong>${name}</strong> — ${count} Championships</li>`).join('') + "</ul>";
+}
+
+window.onload = buildHallOfFame;
+</script>
+</body>
+</html>

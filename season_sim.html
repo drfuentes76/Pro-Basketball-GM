@@ -1,33 +1,49 @@
 
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Season Sim</title>
-    <link rel="stylesheet" href="../style.css">
-</head>
+<html>
+<head><title>Season Simulation</title></head>
 <body>
-    <h1>Season Sim</h1>
-    <p>This is the Season Sim screen.</p>
-    <button onclick="window.location.href='../main.html'">Return to Home</button>
-<script><!-- JS logic to simulate an entire season --></script>
-<div id='seasonResult'></div>
-<script>
-function simulateSeason() {
-    document.getElementById('seasonResult').innerText = "Season simulated. Check standings and awards.";
-}
-</script>
+<h1>Full 82-Game Season Simulation</h1>
+<div id="seasonOutput"></div>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
 <script>
 function simulateFullSeason() {
-    let updates = [
-        "LeBron's performance declined slightly due to age.",
-        "Jayson Tatum emerged as team leader.",
-        "Locker room conflict affected chemistry.",
-        "Fanbase rallied behind rookie breakout.",
-        "Veteran players regressed in second half of season."
+    const teams = [
+        { name: "Lakers", wins: 0, losses: 0 },
+        { name: "Celtics", wins: 0, losses: 0 },
+        { name: "Heat", wins: 0, losses: 0 },
+        { name: "Bulls", wins: 0, losses: 0 },
+        { name: "Warriors", wins: 0, losses: 0 },
+        { name: "Knicks", wins: 0, losses: 0 }
     ];
-    document.getElementById('seasonResult').innerHTML = "<ul>" + updates.map(u => "<li>" + u + "</li>").join('') + "</ul>";
+
+    // Simulate 82 games per team (each team plays 82 times total)
+    for (let i = 0; i < teams.length; i++) {
+        for (let j = 0; j < 82; j++) {
+            let opponentIndex;
+            do {
+                opponentIndex = Math.floor(Math.random() * teams.length);
+            } while (opponentIndex === i);
+
+            const teamA = teams[i];
+            const teamB = teams[opponentIndex];
+            const scoreA = Math.floor(Math.random() * 50 + 80);
+            const scoreB = Math.floor(Math.random() * 50 + 80);
+
+            if (scoreA > scoreB) {
+                teamA.wins++;
+                teamB.losses++;
+            } else {
+                teamB.wins++;
+                teamA.losses++;
+            }
+        }
+    }
+
+    const results = teams.map(t => `<li>${t.name}: ${t.wins}W - ${t.losses}L</li>`).join('');
+    document.getElementById('seasonOutput').innerHTML = "<ul>" + results + "</ul>";
 }
+
 window.onload = simulateFullSeason;
 </script>
 </body>

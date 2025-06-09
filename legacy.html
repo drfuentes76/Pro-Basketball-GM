@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Legacy Tracker</title></head>
+<body>
+<h1>Player Legacy Tracker</h1>
+<div id="legacy"></div>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
+<script>
+function loadLegacyTracker() {
+    const history = JSON.parse(localStorage.getItem("seasonHistory") || "[]");
+    const legacy = {};
+
+    history.forEach(season => {
+        season.awards.forEach(award => {
+            const player = award.player;
+            if (!legacy[player]) {
+                legacy[player] = { MVP: 0, "Finals MVP": 0, "Rookie of the Year": 0, "Defensive Player": 0, 
+                                   "Sixth Man": 0, "Most Improved": 0, "Coach of the Year": 0, total: 0 };
+            }
+            if (legacy[player][award.title] !== undefined) {
+                legacy[player][award.title]++;
+            }
+            legacy[player].total++;
+        });
+    });
+
+    let output = "<ul>";
+    Object.entries(legacy).forEach(([player, record]) => {
+        output += `<li><strong>${player}</strong> — Total Awards: ${record.total}<ul>`;
+        Object.entries(record).forEach(([award, count]) => {
+            if (award !== "total" && count > 0) {
+                output += `<li>${award}: ${count}</li>`;
+            }
+        });
+        output += "</ul></li>";
+    });
+    output += "</ul>";
+
+    document.getElementById("legacy").innerHTML = output;
+}
+
+window.onload = loadLegacyTracker;
+</script>
+</body>
+</html>

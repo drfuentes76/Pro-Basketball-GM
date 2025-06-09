@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Press Conference & Social Media</title></head>
+<body>
+<h1>Press Conference & Fan Feedback</h1>
+<div id="conferenceLog"></div>
+<div id="socialFeed"></div>
+<button onclick="hostPressConference()">Host Press Conference</button>
+<button onclick="viewFanReactions()">View Fan Reactions</button>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
+<script>
+let fanMorale = JSON.parse(localStorage.getItem("fanMorale") || '{"score": 75, "log": []}');
+let pressResponses = [
+    { msg: "We believe in our roster.", effect: 5 },
+    { msg: "We’re rebuilding. Be patient.", effect: -5 },
+    { msg: "Our fans deserve better. We'll do better.", effect: 10 },
+    { msg: "Ticket prices reflect championship aspirations.", effect: -10 }
+];
+
+let fanTweets = [
+    { msg: "This GM actually listens. Respect.", effect: 3 },
+    { msg: "Why trade our MVP?!", effect: -8 },
+    { msg: "We might win it all this year 🔥", effect: 5 },
+    { msg: "Another price hike? Really?", effect: -7 },
+    { msg: "Signed a legend? LET'S GOO!", effect: 10 }
+];
+
+function hostPressConference() {
+    const pick = pressResponses[Math.floor(Math.random() * pressResponses.length)];
+    fanMorale.score += pick.effect;
+    fanMorale.score = Math.max(0, Math.min(100, fanMorale.score));
+    fanMorale.log.push(`Press Conf: "${pick.msg}" (Effect: ${pick.effect > 0 ? '+' : ''}${pick.effect})`);
+    localStorage.setItem("fanMorale", JSON.stringify(fanMorale));
+    document.getElementById("conferenceLog").innerHTML = `<p><strong>GM said:</strong> "${pick.msg}"</p><p>Fan Morale: ${fanMorale.score}</p>`;
+}
+
+function viewFanReactions() {
+    const output = fanTweets
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map(t => `<li>"${t.msg}" (${t.effect > 0 ? '+' : ''}${t.effect} morale)</li>`)
+        .join('');
+    document.getElementById("socialFeed").innerHTML = `<h3>Fan Tweets</h3><ul>${output}</ul>`;
+}
+</script>
+</body>
+</html>

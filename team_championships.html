@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html>
+<head><title>Team Championship Tracker</title></head>
+<body>
+<h1>Team Championship History</h1>
+<div id="championships"></div>
+<button onclick="window.location.href='../main.html'">Return to Home</button>
+<script>
+function loadChampionshipHistory() {
+    const history = JSON.parse(localStorage.getItem("seasonHistory") || "[]");
+    const teamTitles = {};
+
+    history.forEach(season => {
+        const champ = season.champion;
+        if (!teamTitles[champ]) {
+            teamTitles[champ] = 0;
+        }
+        teamTitles[champ]++;
+    });
+
+    const sortedTeams = Object.entries(teamTitles).sort((a, b) => b[1] - a[1]);
+
+    let html = "<ul>";
+    sortedTeams.forEach(([team, titles]) => {
+        html += `<li><strong>${team}</strong>: ${titles} Championship${titles > 1 ? "s" : ""}</li>`;
+    });
+    html += "</ul>";
+
+    document.getElementById("championships").innerHTML = html;
+}
+
+window.onload = loadChampionshipHistory;
+</script>
+</body>
+</html>
