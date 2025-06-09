@@ -1,12 +1,76 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="refresh" content="0; URL='main.html'" />
-    <meta charset="UTF-8">
-    <title>Redirecting...</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pro Basketball Front Office</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    button, select {
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-    <p>Redirecting to the main game menu...</p>
+
+  <h1>Pro Basketball Front Office</h1>
+
+  <!-- Game Start Section -->
+  <div>
+    <h3>Start Game</h3>
+    <label for="teamSelect">Select Your Team:</label>
+    <select id="teamSelect">
+      <option value="" disabled selected>Select a Team</option>
+      <option value="LALakers">LA Lakers</option>
+      <option value="BOSCeltics">Boston Celtics</option>
+      <option value="CHIChicago">Chicago Bulls</option>
+    </select>
+    <button onclick="startGame()">Start Game</button>
+  </div>
+
+  <!-- Main Navigation Buttons -->
+  <h3>Main Menu</h3>
+  <div>
+    <button onclick="navigateTo('roster.html')">Roster View</button>
+    <button onclick="navigateTo('depth.html')">Depth Chart</button>
+    <button onclick="navigateTo('game.html')">Game Simulation</button>
+    <button onclick="navigateTo('season.html')">Season Simulation</button>
+    <button onclick="navigateTo('stats.html')">Player Stats</button>
+    <button onclick="navigateTo('standings.html')">Standings</button>
+    <button onclick="navigateTo('news.html')">News Ticker</button>
+    <button onclick="navigateTo('contracts.html')">Contract Negotiations</button>
+    <button onclick="navigateTo('scouting.html')">Scouting</button>
+    <button onclick="navigateTo('draft.html')">Draft Lottery</button>
+    <button onclick="navigateTo('allstar.html')">All-Star Voting</button>
+    <button onclick="navigateTo('awards.html')">Awards</button>
+    <button onclick="navigateTo('trades.html')">Trade Rumors</button>
+    <button onclick="navigateTo('playoffs.html')">Playoffs</button>
+    <button onclick="navigateTo('settings.html')">Settings</button>
+    <button onclick="navigateTo('save.html')">Save Game</button>
+    <button onclick="navigateTo('load.html')">Load Game</button>
+  </div>
+
+  <script>
+    function navigateTo(page) {
+      window.location.href = page;
+    }
+
+    function startGame() {
+      const selectedTeam = document.getElementById('teamSelect').value;
+      if (!selectedTeam) {
+        alert("Please select a team to start the game.");
+        return;
+      }
+      localStorage.setItem("userTeam", selectedTeam);
+      window.location.href = "game.html";
+    }
+  </script>
+
 </body>
 </html>
