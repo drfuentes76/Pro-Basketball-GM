@@ -1,0 +1,34 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Star Voting</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <h1>All Star Voting</h1>
+    <p>This is the All Star Voting screen.</p>
+    <button onclick="window.location.href='../main.html'">Return to Home</button>
+<script><!-- Logic for All-Star voting and results tracking --></script>
+<div id='voting'></div>
+<script>
+function loadVoting() {
+    fetch('../data/players.json')
+    .then(res => res.json())
+    .then(players => {
+        let list = players.map(p => {
+            return `<li><input type='checkbox' name='vote' value='${p.name}' /> ${p.name}</li>`;
+        }).join('');
+        document.getElementById('voting').innerHTML = `<form onsubmit='submitVotes(event)'><ul>${list}</ul><button type='submit'>Vote</button></form>`;
+    });
+}
+function submitVotes(event) {
+    event.preventDefault();
+    const votes = Array.from(document.querySelectorAll("input[name='vote']:checked")).map(cb => cb.value);
+    alert("Your All-Star votes: " + votes.join(", "));
+}
+window.onload = loadVoting;
+</script>
+</body>
+</html>

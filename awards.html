@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Awards</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <h1>Awards</h1>
+    <p>This is the Awards screen.</p>
+    <button onclick="window.location.href='../main.html'">Return to Home</button>
+<script><!-- JS for calculating and displaying league awards --></script>
+<div id='awardsList'></div>
+<script>
+function showAwards() {
+    let awards = [
+        { title: "MVP", player: "LeBron James" },
+        { title: "Rookie of the Year", player: "John Doe" },
+        { title: "Defensive Player of the Year", player: "Sam Smith" },
+        { title: "Most Improved", player: "Jayson Tatum" }
+    ];
+    document.getElementById('awardsList').innerHTML = "<ul>" + awards.map(a => `<li>${a.title}: ${a.player}</li>`).join('') + "</ul>";
+}
+window.onload = showAwards;
+</script>
+</body>
+</html>

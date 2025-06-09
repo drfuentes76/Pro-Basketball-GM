@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News Ticker</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <h1>News Ticker</h1>
+    <p>This is the News Ticker screen.</p>
+    <button onclick="window.location.href='../main.html'">Return to Home</button>
+<script><!-- Auto-scroll ticker for league news and events --></script>
+<div id='ticker'></div>
+<script>
+function startNewsTicker() {
+    const newsItems = [
+        "LeBron scores 40 in OT win!",
+        "Celtics clinch playoff spot.",
+        "Spurs draft top prospect.",
+        "Fans protest controversial trade.",
+        "Jordan returns for charity game."
+    ];
+    let i = 0;
+    setInterval(() => {
+        document.getElementById('ticker').innerText = newsItems[i % newsItems.length];
+        i++;
+    }, 3000);
+}
+window.onload = startNewsTicker;
+</script>
+</body>
+</html>
